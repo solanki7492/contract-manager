@@ -1,0 +1,126 @@
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "useDefineForClassFields": true,
+        "lib": [
+            "ES2020",
+            "DOM",
+            "DOM.Iterable"
+        ],
+        "module": "ESNext",
+        "skipLibCheck": true,
+        /* Bundler mode */
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "jsx": "react-jsx",
+        /* Linting */
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        /* Path Aliases */
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "./resources/js/*"
+            ],
+            "@/src/*": [
+                "./resources/js/src/*"
+            ],
+            "@/components/*": [
+                "./resources/js/src/components/*"
+            ],
+            "@/layouts/*": [
+                "./resources/js/src/layouts/*"
+            ],
+            "@/pages/*": [
+                "./resources/js/src/pages/*"
+            ],
+            "@/hooks/*": [
+                "./resources/js/src/hooks/*"
+            ],
+            "@/lib/*": [
+                "./resources/js/src/lib/*"
+            ],
+            "@/config/*": [
+                "./resources/js/src/config/*"
+            ],
+            "@/providers/*": [
+                "./resources/js/src/providers/*"
+            ]
+        }
+    },
+    "include": [
+        "resources/js/**/*.ts",
+        "resources/js/**/*.tsx",
+        "resources/js/**/*.d.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "resources/js/src/pages",
+        "resources/js/src/auth",
+        "resources/js/src/routing",
+        "resources/js/src/layouts/demo2",
+        "resources/js/src/layouts/demo3",
+        "resources/js/src/layouts/demo4",
+        "resources/js/src/layouts/demo5",
+        "resources/js/src/layouts/demo6",
+        "resources/js/src/layouts/demo7",
+        "resources/js/src/layouts/demo8",
+        "resources/js/src/layouts/demo9",
+        "resources/js/src/layouts/demo10",
+        "resources/js/src/layouts/error",
+        "resources/js/src/layouts/demo1/components/header.tsx",
+        "resources/js/src/layouts/demo1/components/sidebar.tsx",
+        "resources/js/src/layouts/demo1/components/sidebar-menu.tsx",
+        "resources/js/src/layouts/demo1/components/sidebar-header.tsx",
+        "resources/js/src/layouts/demo1/components/mega-menu.tsx",
+        "resources/js/src/layouts/demo1/components/mega-menu-mobile.tsx",
+        "resources/js/src/layouts/demo1/components/breadcrumb.tsx",
+        "resources/js/src/layouts/demo1/components/content.tsx",
+        "resources/js/src/layouts/demo1/components/toolbar.tsx",
+        "resources/js/src/layouts/demo1/layout.tsx",
+        "resources/js/src/partials",
+        "resources/js/src/App.tsx",
+        "resources/js/src/main.tsx",
+        "resources/js/src/errors",
+        "resources/js/src/i18n",
+        "resources/js/src/lib/supabase.ts",
+        "resources/js/src/providers/i18n-provider.tsx",
+        "resources/js/src/providers/query-provider.tsx",
+        "resources/js/src/providers/theme-provider.tsx",
+        "resources/js/src/components/supabase",
+        "resources/js/src/components/common/recaptcha-popover.tsx",
+        "resources/js/src/components/ui/sonner.tsx",
+        "resources/js/src/components/ui/checkbox.tsx",
+        "resources/js/src/components/ui/collapsible.tsx",
+        "resources/js/src/components/ui/dialog.tsx",
+        "resources/js/src/components/ui/dropdown-menu.tsx",
+        "resources/js/src/components/ui/form.tsx",
+        "resources/js/src/components/ui/label.tsx",
+        "resources/js/src/components/ui/menubar.tsx",
+        "resources/js/src/components/ui/navigation-menu.tsx",
+        "resources/js/src/components/ui/popover.tsx",
+        "resources/js/src/components/ui/progress.tsx",
+        "resources/js/src/components/ui/radio-group.tsx",
+        "resources/js/src/components/ui/scroll-area.tsx",
+        "resources/js/src/components/ui/select.tsx",
+        "resources/js/src/components/ui/separator.tsx",
+        "resources/js/src/components/ui/sheet.tsx",
+        "resources/js/src/components/ui/slider.tsx",
+        "resources/js/src/components/ui/switch.tsx",
+        "resources/js/src/components/ui/tabs.tsx",
+        "resources/js/src/components/ui/toggle.tsx",
+        "resources/js/src/components/ui/toggle-group.tsx",
+        "resources/js/src/components/ui/tooltip.tsx",
+        "resources/js/src/components/ui/**/.*"
+    ],
+    "references": [
+        {
+            "path": "./tsconfig.node.json"
+        }
+    ]
+}
