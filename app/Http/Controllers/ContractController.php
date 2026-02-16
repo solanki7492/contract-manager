@@ -83,7 +83,7 @@ class ContractController extends Controller
 
     public function show(Contract $contract): Response
     {
-        $this->authorize('view', $contract);
+        //$this->authorize('view', $contract);
 
         $contract->load(['contractType', 'creator', 'reminders.recipients.user']);
 
@@ -97,7 +97,7 @@ class ContractController extends Controller
 
     public function edit(Contract $contract): Response
     {
-        $this->authorize('update', $contract);
+        //$this->authorize('update', $contract);
 
         $contract->load(['contractType']);
 

@@ -7,6 +7,7 @@ import {
   Settings,
   Users,
   UserPlus,
+  Plus,
 } from 'lucide-react';
 import { type MenuConfig } from './types';
 
@@ -48,6 +49,21 @@ export const MENU_COMPANY: MenuConfig = [
     title: 'Contracts',
     path: '/contracts',
     icon: FileText,
+    children: [
+      {
+        title: 'All Contracts',
+        path: '/contracts',
+      },
+      {
+        title: 'Create',
+        path: '/contracts/create',
+        icon: Plus,
+      },
+      {
+        title: 'Edit',
+        path: '/contracts/:id/edit',
+      },
+    ],
   },
   {
     title: 'Reminders',

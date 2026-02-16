@@ -6,33 +6,63 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
-import { ArrowLeft, FileText, Calendar, Clock, FileUp } from 'lucide-react';
+import { ArrowLeft, FileText, Calendar, Clock, FileUp, Loader2 } from 'lucide-react';
 
 interface ContractType {
     id: number;
     name: string;
 }
 
-interface CreateContractProps {
+interface Contract {
+    id: number;
+    title: string;
+    contract_type_id: number | null;
+    counterparty: string;
+    start_date: string | null;
+    end_date: string;
+    termination_notice_days: number | null;
+    termination_deadline_date: string | null;
+    notes: string | null;
+    file_path: string | null;
+}
+
+interface EditContractProps {
+    contract: Contract;
     contractTypes: ContractType[];
 }
 
-export default function CreateContract({ contractTypes }: CreateContractProps) {
+// Helper function to format date for input[type="date"]
+const formatDateForInput = (dateString: string | null | undefined): string => {
+    if (!dateString) return '';
+    // If it's already in YYYY-MM-DD format, return as is
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return dateString;
+    // Try to parse and format the date
+    try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return '';
+        return date.toISOString().split('T')[0];
+    } catch {
+        return '';
+    }
+};
+
+export default function EditContract({ contract, contractTypes }: EditContractProps) {
     const { data, setData, post, processing, errors } = useForm({
-        title: '',
-        contract_type_id: '',
-        counterparty: '',
-        start_date: '',
-        end_date: '',
-        termination_notice_days: '',
-        termination_deadline_date: '',
-        notes: '',
+        _method: 'PUT',
+        title: contract.title || '',
+        contract_type_id: contract.contract_type_id?.toString() || '',
+        counterparty: contract.counterparty || '',
+        start_date: formatDateForInput(contract.start_date),
+        end_date: formatDateForInput(contract.end_date),
+        termination_notice_days: contract.termination_notice_days?.toString() || '',
+        termination_deadline_date: formatDateForInput(contract.termination_deadline_date),
+        notes: contract.notes || '',
         file: null as File | null,
     });
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        post('/contracts');
+        post(`/contracts/${contract.id}`);
     };
 
     return (
@@ -44,10 +74,10 @@ export default function CreateContract({ contractTypes }: CreateContractProps) {
                         <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2.5 font-semibold text-lg text-gray-900">
                                 <FileText className="size-5 text-gray-700" />
-                                Create New Contract
+                                Edit Contract
                             </div>
                             <p className="text-sm text-gray-600">
-                                Add a new contract to the system
+                                Update contract information
                             </p>
                         </div>
                         <div className="flex items-center gap-2.5">
@@ -243,6 +273,20 @@ export default function CreateContract({ contractTypes }: CreateContractProps) {
                                         <Label htmlFor="file" className="text-sm font-medium text-gray-900 mb-2 block">
                                             Contract File (PDF/DOC)
                                         </Label>
+                                        {contract.file_path && (
+                                            <div className="mb-2 p-3 bg-gray-50 rounded-md border border-gray-200">
+                                                <div className="flex items-center gap-2 text-sm">
+                                                    <FileText className="size-4 text-gray-500" />
+                                                    <span className="text-gray-700">Current file:</span>
+                                                    <Link
+                                                        href={`/contracts/${contract.id}/download`}
+                                                        className="text-blue-600 hover:text-blue-700 hover:underline"
+                                                    >
+                                                        {contract.file_path.split('/').pop()}
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                        )}
                                         <Input
                                             id="file"
                                             type="file"
@@ -251,7 +295,11 @@ export default function CreateContract({ contractTypes }: CreateContractProps) {
                                             className="h-10"
                                         />
                                         {errors.file && <div className="mt-1.5 text-xs text-red-600">{errors.file}</div>}
-                                        <p className="mt-1.5 text-xs text-gray-500">Max size: 10MB. Allowed: PDF, DOC, DOCX</p>
+                                        <p className="mt-1.5 text-xs text-gray-500">
+                                            {contract.file_path
+                                                ? 'Upload a new file to replace the current one. Max size: 10MB. Allowed: PDF, DOC, DOCX'
+                                                : 'Max size: 10MB. Allowed: PDF, DOC, DOCX'}
+                                        </p>
                                     </div>
                                 </div>
                             </CardContent>
@@ -264,7 +312,14 @@ export default function CreateContract({ contractTypes }: CreateContractProps) {
                                 disabled={processing}
                                 size="sm"
                             >
-                                {processing ? 'Creating...' : 'Create Contract'}
+                                {processing ? (
+                                    <>
+                                        <Loader2 className="size-4 animate-spin" />
+                                        Updating...
+                                    </>
+                                ) : (
+                                    'Update Contract'
+                                )}
                             </Button>
                             <Button type="button" variant="outline" size="sm" asChild>
                                 <Link href="/contracts">Cancel</Link>
