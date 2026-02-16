@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
+use App\Models\User;
 use App\Services\DashboardService;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -16,7 +18,21 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         
-        // Super admins don't have a company_id, redirect them or show appropriate message
+        // Super admin dashboard
+        if ($user->isSuperAdmin()) {
+            $companies = Company::withCount('users')
+                ->orderBy('created_at', 'desc')
+                ->limit(10)
+                ->get();
+            
+            return Inertia::render('Dashboard/Index', [
+                'companies' => $companies,
+                'totalCompanies' => Company::count(),
+                'totalUsers' => User::count(),
+            ]);
+        }
+        
+        // Company user dashboard
         if (!$user->company_id) {
             return Inertia::render('Dashboard/Index', [
                 'stats' => [

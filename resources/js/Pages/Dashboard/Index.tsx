@@ -1,5 +1,5 @@
 import MainLayout from '../../Layouts/MainLayout';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import {
     FileCheck,
     Clock,
@@ -9,10 +9,13 @@ import {
     BellRing,
     TrendingUp,
     Calendar,
+    Building2,
+    Users,
+    Plus,
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card';
-import { Badge } from '@/src/components/ui/badge';
-import { Button } from '@/src/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
     Table,
     TableBody,
@@ -20,8 +23,9 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from '@/src/components/ui/table';
-import { cn } from '@/src/lib/utils';
+} from '@/components/ui/table';
+import { cn } from '@/lib/utils';
+import { Container } from '@/components/common/container';
 
 interface Contract {
     id: number;
@@ -47,17 +51,136 @@ interface Stats {
     upcoming_reminders_30_days: number;
 }
 
-interface DashboardProps {
-    stats: Stats;
-    expiringContracts: Contract[];
-    upcomingReminders: Reminder[];
+interface Company {
+    id: number;
+    name: string;
+    users_count: number;
+    is_active: boolean;
 }
 
-export default function Dashboard({ stats, expiringContracts, upcomingReminders }: DashboardProps) {
+interface DashboardProps {
+    stats?: Stats;
+    expiringContracts?: Contract[];
+    upcomingReminders?: Reminder[];
+    companies?: Company[];
+    totalCompanies?: number;
+    totalUsers?: number;
+}
+
+interface PageProps {
+    auth?: {
+        user?: {
+            role?: string;
+        };
+    };
+    [key: string]: unknown;
+}
+
+export default function Dashboard({ stats, expiringContracts, upcomingReminders, companies, totalCompanies, totalUsers }: DashboardProps) {
+    const page = usePage<PageProps>();
+    const isSuperAdmin = page.props.auth?.user?.role === 'superadmin';
+
+    if (isSuperAdmin) {
+        return (
+            <MainLayout>
+                <Container>
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h1 className="text-3xl font-bold text-mono">Super Admin Dashboard</h1>
+                                <p className="text-sm text-muted-foreground mt-1">Manage companies and monitor system-wide activity.</p>
+                            </div>
+                            <Button asChild>
+                                <Link href="/companies/create">
+                                    <Plus className="w-4 h-4 mr-2" />
+                                    New Company
+                                </Link>
+                            </Button>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0">
+                                <CardContent className="pt-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <div className="text-blue-100 text-sm font-medium">Total Companies</div>
+                                            <div className="text-4xl font-bold mt-2">{totalCompanies || 0}</div>
+                                        </div>
+                                        <Building2 className="w-12 h-12 text-blue-200" />
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0">
+                                <CardContent className="pt-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <div className="text-purple-100 text-sm font-medium">Total Users</div>
+                                            <div className="text-4xl font-bold mt-2">{totalUsers || 0}</div>
+                                        </div>
+                                        <Users className="w-12 h-12 text-purple-200" />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                        <Card>
+                            <CardHeader className="border-b">
+                                <div className="flex items-center justify-between">
+                                    <CardTitle>Recent Companies</CardTitle>
+                                    <Button variant="ghost" asChild>
+                                        <Link href="/companies">View All</Link>
+                                    </Button>
+                                </div>
+                            </CardHeader>
+                            <CardContent className="p-0">
+                                {companies && companies.length > 0 ? (
+                                    <div className="divide-y">
+                                        {companies.map((company) => (
+                                            <div key={company.id} className="p-4 hover:bg-accent/50 transition-colors">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                                                            <Building2 className="w-5 h-5 text-primary" />
+                                                        </div>
+                                                        <div>
+                                                            <div className="font-medium text-mono">{company.name}</div>
+                                                            <div className="text-sm text-muted-foreground flex items-center gap-1">
+                                                                <Users className="w-3 h-3" />
+                                                                {company.users_count} users
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        <Badge variant={company.is_active ? 'success' : 'destructive'}>
+                                                            {company.is_active ? 'Active' : 'Inactive'}
+                                                        </Badge>
+                                                        <Button variant="ghost" size="sm" asChild>
+                                                            <Link href={`/companies/${company.id}/edit`}>Edit</Link>
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="p-12 text-center text-muted-foreground">
+                                        <Building2 className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                                        <p>No companies yet</p>
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </div>
+                </Container>
+            </MainLayout>
+        );
+    }
+
     const statCards = [
         {
             label: 'Active Contracts',
-            value: stats.active_contracts,
+            value: stats?.active_contracts || 0,
             color: 'text-blue-500',
             bgColor: 'bg-blue-500/10',
             icon: FileCheck,
@@ -65,7 +188,7 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders 
         },
         {
             label: 'Expiring in 30 Days',
-            value: stats.expiring_30_days,
+            value: stats?.expiring_30_days || 0,
             color: 'text-yellow-500',
             bgColor: 'bg-yellow-500/10',
             icon: Clock,
@@ -73,7 +196,7 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders 
         },
         {
             label: 'Expiring in 60 Days',
-            value: stats.expiring_60_days,
+            value: stats?.expiring_60_days || 0,
             color: 'text-orange-500',
             bgColor: 'bg-orange-500/10',
             icon: AlertTriangle,
@@ -81,7 +204,7 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders 
         },
         {
             label: 'Expiring in 90 Days',
-            value: stats.expiring_90_days,
+            value: stats?.expiring_90_days || 0,
             color: 'text-red-500',
             bgColor: 'bg-red-500/10',
             icon: Flame,
@@ -89,7 +212,7 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders 
         },
         {
             label: 'Reminders (7 Days)',
-            value: stats.upcoming_reminders_7_days,
+            value: stats?.upcoming_reminders_7_days || 0,
             color: 'text-purple-500',
             bgColor: 'bg-purple-500/10',
             icon: BellRing,
@@ -97,7 +220,7 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders 
         },
         {
             label: 'Reminders (30 Days)',
-            value: stats.upcoming_reminders_30_days,
+            value: stats?.upcoming_reminders_30_days || 0,
             color: 'text-indigo-500',
             bgColor: 'bg-indigo-500/10',
             icon: Bell,
@@ -120,184 +243,186 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders 
 
     return (
         <MainLayout>
-            <div className="space-y-6">
-                {/* Page Header */}
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-                        <p className="text-muted-foreground mt-1">
-                            Welcome back! Here's an overview of your contracts and reminders.
-                        </p>
+            <Container>
+                <div className="space-y-6">
+                    {/* Page Header */}
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-3xl font-bold text-mono">Dashboard</h1>
+                            <p className="text-muted-foreground mt-1">
+                                Welcome back! Here's an overview of your contracts and reminders.
+                            </p>
+                        </div>
+                        <Button asChild>
+                            <Link href="/contracts/create">
+                                <FileCheck className="mr-2 h-4 w-4" />
+                                New Contract
+                            </Link>
+                        </Button>
                     </div>
-                    <Button asChild>
-                        <Link href="/contracts/create">
-                            <FileCheck className="mr-2 h-4 w-4" />
-                            New Contract
-                        </Link>
-                    </Button>
-                </div>
 
-                {/* Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    {statCards.map((stat, index) => {
-                        const Icon = stat.icon;
-                        return (
-                            <Card key={index} className="hover:shadow-md transition-shadow">
-                                <CardContent className="p-6">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex-1">
-                                            <p className="text-sm font-medium text-muted-foreground mb-1">
-                                                {stat.label}
-                                            </p>
-                                            <div className="flex items-baseline gap-2">
-                                                <p className="text-3xl font-bold text-foreground">
-                                                    {stat.value}
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        {statCards.map((stat, index) => {
+                            const Icon = stat.icon;
+                            return (
+                                <Card key={index} className="hover:shadow-lg transition-shadow">
+                                    <CardContent className="p-6">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex-1">
+                                                <p className="text-sm font-medium text-muted-foreground mb-1">
+                                                    {stat.label}
                                                 </p>
-                                                <span className={cn(
-                                                    "text-xs font-medium flex items-center gap-1",
-                                                    stat.trend.startsWith('+') ? "text-green-600" : "text-red-600"
-                                                )}>
-                                                    <TrendingUp className="h-3 w-3" />
-                                                    {stat.trend}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className={cn("p-3 rounded-lg", stat.bgColor)}>
-                                            <Icon className={cn("h-6 w-6", stat.color)} />
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        );
-                    })}
-                </div>
-
-                {/* Expiring Contracts */}
-                <Card>
-                    <CardHeader>
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <CardTitle className="text-xl">Expiring Contracts</CardTitle>
-                                <CardDescription>Contracts expiring in the next 90 days</CardDescription>
-                            </div>
-                            <Button variant="outline" size="sm" asChild>
-                                <Link href="/contracts">View All</Link>
-                            </Button>
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        {expiringContracts.length === 0 ? (
-                            <div className="text-center py-12">
-                                <FileCheck className="mx-auto h-12 w-12 text-muted-foreground/50" />
-                                <p className="text-muted-foreground mt-4">No contracts expiring soon</p>
-                            </div>
-                        ) : (
-                            <div className="rounded-md border">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Title</TableHead>
-                                            <TableHead>Counterparty</TableHead>
-                                            <TableHead>End Date</TableHead>
-                                            <TableHead>Days Left</TableHead>
-                                            <TableHead>Status</TableHead>
-                                            <TableHead className="text-right">Actions</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {expiringContracts.map((contract) => (
-                                            <TableRow key={contract.id}>
-                                                <TableCell className="font-medium">
-                                                    {contract.title}
-                                                </TableCell>
-                                                <TableCell>{contract.counterparty}</TableCell>
-                                                <TableCell>
-                                                    <div className="flex items-center gap-2">
-                                                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                                                        {new Date(contract.end_date).toLocaleDateString()}
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <span className="font-medium">
-                                                        {contract.days_until_end} days
+                                                <div className="flex items-baseline gap-2">
+                                                    <p className="text-3xl font-bold text-mono">
+                                                        {stat.value}
+                                                    </p>
+                                                    <span className={cn(
+                                                        "text-xs font-medium flex items-center gap-1",
+                                                        stat.trend.startsWith('+') ? "text-green-600" : "text-red-600"
+                                                    )}>
+                                                        <TrendingUp className="h-3 w-3" />
+                                                        {stat.trend}
                                                     </span>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Badge
-                                                        variant="secondary"
-                                                        className={cn(getStatusColor(contract.status))}
-                                                    >
-                                                        {contract.status}
-                                                    </Badge>
-                                                </TableCell>
-                                                <TableCell className="text-right">
-                                                    <Button variant="ghost" size="sm" asChild>
-                                                        <Link href={`/contracts/${contract.id}`}>
-                                                            View
-                                                        </Link>
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
-
-                {/* Upcoming Reminders */}
-                <Card>
-                    <CardHeader>
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <CardTitle className="text-xl">Upcoming Reminders</CardTitle>
-                                <CardDescription>Reminders scheduled for the next 30 days</CardDescription>
-                            </div>
-                            <Button variant="outline" size="sm" asChild>
-                                <Link href="/reminders">View All</Link>
-                            </Button>
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        {upcomingReminders.length === 0 ? (
-                            <div className="text-center py-12">
-                                <Bell className="mx-auto h-12 w-12 text-muted-foreground/50" />
-                                <p className="text-muted-foreground mt-4">No upcoming reminders</p>
-                            </div>
-                        ) : (
-                            <div className="space-y-3">
-                                {upcomingReminders.map((reminder) => (
-                                    <div
-                                        key={reminder.id}
-                                        className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <div className="p-2 rounded-lg bg-primary/10">
-                                                <Bell className="h-5 w-5 text-primary" />
+                                                </div>
                                             </div>
-                                            <div>
-                                                <p className="font-medium text-foreground">
-                                                    {reminder.contract_title}
-                                                </p>
-                                                <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
-                                                    <Calendar className="h-3 w-3" />
-                                                    Due: {new Date(reminder.trigger_datetime).toLocaleString()}
-                                                </p>
+                                            <div className={cn("p-3 rounded-lg", stat.bgColor)}>
+                                                <Icon className={cn("h-6 w-6", stat.color)} />
                                             </div>
                                         </div>
-                                        <Button variant="ghost" size="sm" asChild>
-                                            <Link href={`/reminders/${reminder.id}`}>
-                                                View
-                                            </Link>
-                                        </Button>
-                                    </div>
-                                ))}
+                                    </CardContent>
+                                </Card>
+                            );
+                        })}
+                    </div>
+
+                    {/* Expiring Contracts */}
+                    <Card>
+                        <CardHeader className="border-b">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <CardTitle className="text-xl">Expiring Contracts</CardTitle>
+                                    <CardDescription>Contracts expiring in the next 90 days</CardDescription>
+                                </div>
+                                <Button variant="outline" size="sm" asChild>
+                                    <Link href="/contracts">View All</Link>
+                                </Button>
                             </div>
-                        )}
-                    </CardContent>
-                </Card>
-            </div>
+                        </CardHeader>
+                        <CardContent>
+                            {!expiringContracts || expiringContracts.length === 0 ? (
+                                <div className="text-center py-12">
+                                    <FileCheck className="mx-auto h-12 w-12 text-muted-foreground/50" />
+                                    <p className="text-muted-foreground mt-4">No contracts expiring soon</p>
+                                </div>
+                            ) : (
+                                <div className="rounded-md border">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Title</TableHead>
+                                                <TableHead>Counterparty</TableHead>
+                                                <TableHead>End Date</TableHead>
+                                                <TableHead>Days Left</TableHead>
+                                                <TableHead>Status</TableHead>
+                                                <TableHead className="text-right">Actions</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {expiringContracts.map((contract) => (
+                                                <TableRow key={contract.id}>
+                                                    <TableCell className="font-medium">
+                                                        {contract.title}
+                                                    </TableCell>
+                                                    <TableCell>{contract.counterparty}</TableCell>
+                                                    <TableCell>
+                                                        <div className="flex items-center gap-2">
+                                                            <Calendar className="h-4 w-4 text-muted-foreground" />
+                                                            {new Date(contract.end_date).toLocaleDateString()}
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <span className="font-medium">
+                                                            {contract.days_until_end} days
+                                                        </span>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Badge
+                                                            variant="secondary"
+                                                            className={cn(getStatusColor(contract.status))}
+                                                        >
+                                                            {contract.status}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell className="text-right">
+                                                        <Button variant="ghost" size="sm" asChild>
+                                                            <Link href={`/contracts/${contract.id}`}>
+                                                                View
+                                                            </Link>
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    {/* Upcoming Reminders */}
+                    <Card>
+                        <CardHeader className="border-b">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <CardTitle className="text-xl">Upcoming Reminders</CardTitle>
+                                    <CardDescription>Reminders scheduled for the next 30 days</CardDescription>
+                                </div>
+                                <Button variant="outline" size="sm" asChild>
+                                    <Link href="/reminders">View All</Link>
+                                </Button>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            {!upcomingReminders || upcomingReminders.length === 0 ? (
+                                <div className="text-center py-12">
+                                    <Bell className="mx-auto h-12 w-12 text-muted-foreground/50" />
+                                    <p className="text-muted-foreground mt-4">No upcoming reminders</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-3">
+                                    {upcomingReminders.map((reminder) => (
+                                        <div
+                                            key={reminder.id}
+                                            className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className="p-2 rounded-lg bg-primary/10">
+                                                    <Bell className="h-5 w-5 text-primary" />
+                                                </div>
+                                                <div>
+                                                    <p className="font-medium text-mono">
+                                                        {reminder.contract_title}
+                                                    </p>
+                                                    <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+                                                        <Calendar className="h-3 w-3" />
+                                                        Due: {new Date(reminder.trigger_datetime).toLocaleString()}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <Button variant="ghost" size="sm" asChild>
+                                                <Link href={`/reminders/${reminder.id}`}>
+                                                    View
+                                                </Link>
+                                            </Button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
+            </Container>
         </MainLayout>
     );
 }

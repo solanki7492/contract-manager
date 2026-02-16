@@ -1,73 +1,212 @@
-import { useForm } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
+import { useForm, usePage } from '@inertiajs/react';
 import AuthLayout from '../../Layouts/AuthLayout';
+import { Eye, EyeOff, Loader2, XCircle, CheckCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Alert, AlertIcon, AlertContent, AlertDescription } from '@/components/ui/alert';
+
+type FormData = {
+    email: string;
+    password: string;
+    remember: boolean;
+};
+
+type PageProps = {
+    errors: Record<string, string>;
+    flash?: {
+        success?: string;
+        error?: string;
+    };
+};
 
 export default function Login() {
-    const { data, setData, post, processing, errors } = useForm({
+    const { flash } = usePage<PageProps>().props;
+    const { data, setData, post, processing, errors } = useForm<FormData>({
         email: '',
         password: '',
-        remember: false,
+        remember: true,
     });
 
-    const submit = (e) => {
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (flash?.error) {
+            setErrorMessage(flash.error);
+        }
+        if (flash?.success) {
+            setSuccessMessage(flash.success);
+        }
+    }, [flash]);
+
+    const submit = (e: React.FormEvent) => {
         e.preventDefault();
+        setErrorMessage(null);
         post('/login');
     };
 
     return (
         <AuthLayout>
-            <form onSubmit={submit}>
-                <h2 className="text-2xl font-bold text-center mb-6">Sign In</h2>
+            <form onSubmit={submit} className="space-y-5 w-full">
+                <div className="text-center space-y-1 pb-3">
+                    <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Sign In</h1>
+                    <p className="text-sm text-gray-600">
+                        Welcome back! Log in with your credentials.
+                    </p>
+                </div>
 
-                <div className="mb-4">
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                        Email
-                    </label>
-                    <input
+                {/* Demo credentials alert */}
+                {/* <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <div className="flex items-start gap-2">
+                        <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <div className="text-sm text-blue-900">
+                            Use <strong>demo@kt.com</strong> username and{' '}
+                            <strong>demo123</strong> password for demo access.
+                        </div>
+                    </div>
+                </div> */}
+
+                {/* Error message */}
+                {(errorMessage || errors.email || errors.password) && (
+                    <Alert
+                        variant="destructive"
+                        appearance="light"
+                        size="md"
+                        close
+                        onClose={() => setErrorMessage(null)}
+                    >
+                        <AlertIcon>
+                        <XCircle />
+                        </AlertIcon>
+
+                        <AlertContent>
+                        <AlertDescription>
+                            {errorMessage || errors.email || errors.password || 
+                            'Authentication failed. Please try again.'}
+                        </AlertDescription>
+                        </AlertContent>
+                    </Alert>
+                )}
+
+                {/* Success message */}
+                {successMessage && (
+                    <Alert
+                        variant="success"
+                        appearance="light"
+                        size="md"
+                        close
+                        onClose={() => setSuccessMessage(null)}
+                    >
+                        <AlertIcon>
+                        <CheckCircle />
+                        </AlertIcon>
+
+                        <AlertContent>
+                        <AlertDescription>
+                            {successMessage}
+                        </AlertDescription>
+                        </AlertContent>
+                    </Alert>
+                )}
+
+
+                {/* Email field */}
+                <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
                         id="email"
                         type="email"
+                        placeholder="Your email"
                         value={data.email}
                         onChange={(e) => setData('email', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        variant="lg"
                         required
                         autoFocus
+                        aria-invalid={!!errors.email}
                     />
-                    {errors.email && <div className="mt-1 text-sm text-red-600">{errors.email}</div>}
+                    {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
                 </div>
 
-                <div className="mb-4">
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                        Password
-                    </label>
-                    <input
-                        id="password"
-                        type="password"
-                        value={data.password}
-                        onChange={(e) => setData('password', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
-                    {errors.password && <div className="mt-1 text-sm text-red-600">{errors.password}</div>}
-                </div>
-
-                <div className="mb-6">
-                    <label className="flex items-center">
-                        <input
-                            type="checkbox"
-                            checked={data.remember}
-                            onChange={(e) => setData('remember', e.target.checked)}
-                            className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                {/* Password field */}
+                <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <div className="relative">
+                        <Input
+                            id="password"
+                            type={passwordVisible ? 'text' : 'password'}
+                            placeholder="Your password"
+                            value={data.password}
+                            onChange={(e) => setData('password', e.target.value)}
+                            variant="lg"
+                            className="pr-10"
+                            required
+                            aria-invalid={!!errors.password}
                         />
-                        <span className="ml-2 text-sm text-gray-600">Remember me</span>
-                    </label>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setPasswordVisible(!passwordVisible)}
+                            className="absolute right-0 top-0 h-full px-3"
+                        >
+                            {passwordVisible ? (
+                                <EyeOff className="w-5 h-5" />
+                            ) : (
+                                <Eye className="w-5 h-5" />
+                            )}
+                        </Button>
+                    </div>
+                    {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
                 </div>
 
-                <button
+                {/* Remember me & Forgot password */}
+                <div className="flex items-center justify-between">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                        <Checkbox
+                            checked={data.remember}
+                            onCheckedChange={(checked) => setData('remember', checked as boolean)}
+                        />
+                        <span className="text-sm">Remember me</span>
+                    </label>
+                    <Button
+                        variant="dim"
+                        mode="link"
+                        size="sm"
+                        asChild
+                    >
+                        <a href="/password/reset">Forgot Password?</a>
+                    </Button>
+                </div>
+
+                {/* Submit button */}
+                <Button
                     type="submit"
                     disabled={processing}
-                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                    variant="primary"
+                    size="lg"
+                    className="w-full"
                 >
-                    {processing ? 'Signing in...' : 'Sign In'}
-                </button>
+                    {processing ? (
+                        <>
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            Signing in...
+                        </>
+                    ) : (
+                        'Sign In'
+                    )}
+                </Button>
+
+                {/* Sign up link */}
+                <div className="text-center text-sm text-muted-foreground">
+                    Don't have an account?{' '}
+                    <Button variant="dim" mode="link" size="sm" asChild>
+                        <a href="/register">Sign Up</a>
+                    </Button>
+                </div>
             </form>
         </AuthLayout>
     );

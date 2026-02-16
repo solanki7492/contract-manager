@@ -26,30 +26,6 @@
         "paths": {
             "@/*": [
                 "./resources/js/*"
-            ],
-            "@/src/*": [
-                "./resources/js/src/*"
-            ],
-            "@/components/*": [
-                "./resources/js/src/components/*"
-            ],
-            "@/layouts/*": [
-                "./resources/js/src/layouts/*"
-            ],
-            "@/pages/*": [
-                "./resources/js/src/pages/*"
-            ],
-            "@/hooks/*": [
-                "./resources/js/src/hooks/*"
-            ],
-            "@/lib/*": [
-                "./resources/js/src/lib/*"
-            ],
-            "@/config/*": [
-                "./resources/js/src/config/*"
-            ],
-            "@/providers/*": [
-                "./resources/js/src/providers/*"
             ]
         }
     },

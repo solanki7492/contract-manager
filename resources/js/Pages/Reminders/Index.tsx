@@ -1,116 +1,168 @@
 import MainLayout from '../../Layouts/MainLayout';
-import { Link, router } from '@inertiajs/react';
-import { PlusIcon, EyeIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { Link } from '@inertiajs/react';
+import { Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { Container } from '@/components/common/container';
 
-export default function RemindersIndex({ reminders, contracts, filters }) {
+interface Contract {
+    id: number;
+    title: string;
+}
+
+interface Recipient {
+    id: number;
+}
+
+interface Reminder {
+    id: number;
+    contract?: Contract;
+    trigger_datetime: string;
+    trigger_type: string;
+    status: string;
+    recipients?: Recipient[];
+}
+
+interface PageProps {
+    reminders: {
+        data: Reminder[];
+        from: number;
+        to: number;
+        total: number;
+        links: Array<{ url: string | null; label: string; active: boolean }>;
+    };
+    contracts: unknown;
+    filters: unknown;
+}
+
+export default function RemindersIndex({ reminders }: PageProps) {
     return (
         <MainLayout>
-            <div className="space-y-6">
-                <div className="flex justify-between items-center">
-                    <h1 className="text-3xl font-bold text-gray-900">Reminders</h1>
-                    <Link
-                        href="/reminders/create"
-                        className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                        <PlusIcon className="w-5 h-5" />
-                        Create Reminder
-                    </Link>
-                </div>
+            <Container>
+                <div className="space-y-6">
+                    <div className="flex justify-between items-center">
+                        <h1 className="text-3xl font-bold text-gray-900">Reminders</h1>
+                        <Button asChild>
+                            <Link href="/reminders/create">
+                                <Plus className="w-5 h-5" />
+                                Create Reminder
+                            </Link>
+                        </Button>
+                    </div>
 
-                {/* Reminders Table */}
-                <div className="bg-white rounded-lg shadow overflow-hidden">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contract</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trigger Date</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recipients</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {reminders.data.length === 0 ? (
-                                <tr>
-                                    <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
-                                        No reminders found
-                                    </td>
-                                </tr>
-                            ) : (
-                                reminders.data.map((reminder) => (
-                                    <tr key={reminder.id}>
-                                        <td className="px-6 py-4">
-                                            <div className="text-sm font-medium text-gray-900">{reminder.contract?.title}</div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm text-gray-900">
-                                                {new Date(reminder.trigger_datetime).toLocaleString()}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm text-gray-900">{reminder.trigger_type}</div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${reminder.status === 'pending' ? 'bg-blue-100 text-blue-800' :
-                                                    reminder.status === 'sent' ? 'bg-green-100 text-green-800' :
-                                                        reminder.status === 'handled' ? 'bg-gray-100 text-gray-800' :
-                                                            'bg-red-100 text-red-800'
-                                                }`}>
-                                                {reminder.status}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="text-sm text-gray-900">{reminder.recipients?.length || 0}</div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                            <Link href={`/reminders/${reminder.id}`} className="text-blue-600 hover:text-blue-900">
-                                                View
-                                            </Link>
-                                            {reminder.status === 'sent' && (
-                                                <Link
-                                                    href={`/reminders/${reminder.id}/handle`}
-                                                    method="post"
-                                                    as="button"
-                                                    className="text-green-600 hover:text-green-900"
-                                                >
-                                                    Mark Handled
-                                                </Link>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-
-                    {/* Pagination */}
-                    {reminders.links && (
-                        <div className="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-                            <div className="flex justify-between items-center">
-                                <div className="text-sm text-gray-700">
-                                    Showing {reminders.from} to {reminders.to} of {reminders.total} results
-                                </div>
-                                <div className="flex space-x-2">
-                                    {reminders.links.map((link, index) => (
-                                        <Link
-                                            key={index}
-                                            href={link.url || '#'}
-                                            className={`px-3 py-1 rounded ${link.active
-                                                    ? 'bg-blue-600 text-white'
-                                                    : link.url
-                                                        ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                                                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                                }`}
-                                            dangerouslySetInnerHTML={{ __html: link.label }}
-                                        />
-                                    ))}
-                                </div>
+                    {/* Reminders Table */}
+                    <Card>
+                        <CardContent className="p-0">
+                            <div className="overflow-x-auto">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Contract</TableHead>
+                                            <TableHead>Trigger Date</TableHead>
+                                            <TableHead>Type</TableHead>
+                                            <TableHead>Status</TableHead>
+                                            <TableHead>Recipients</TableHead>
+                                            <TableHead>Actions</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {reminders.data.length === 0 ? (
+                                            <TableRow>
+                                                <TableCell colSpan={6} className="text-center py-12 text-gray-500">
+                                                    No reminders found
+                                                </TableCell>
+                                            </TableRow>
+                                        ) : (
+                                            reminders.data.map((reminder) => (
+                                                <TableRow key={reminder.id}>
+                                                    <TableCell>
+                                                        <div className="font-medium text-gray-900">{reminder.contract?.title}</div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="text-gray-900">
+                                                            {new Date(reminder.trigger_datetime).toLocaleString()}
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="text-gray-900">{reminder.trigger_type}</div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Badge variant={
+                                                            reminder.status === 'pending' ? 'secondary' :
+                                                                reminder.status === 'sent' ? 'success' :
+                                                                    reminder.status === 'handled' ? 'outline' :
+                                                                        'destructive'
+                                                        }>
+                                                            {reminder.status}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="text-gray-900">{reminder.recipients?.length || 0}</div>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <div className="flex gap-2">
+                                                            <Button variant="ghost" size="sm" asChild>
+                                                                <Link href={`/reminders/${reminder.id}`}>
+                                                                    View
+                                                                </Link>
+                                                            </Button>
+                                                            {reminder.status === 'sent' && (
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    asChild
+                                                                >
+                                                                    <Link
+                                                                        href={`/reminders/${reminder.id}/handle`}
+                                                                        method="post"
+                                                                        as="button"
+                                                                    >
+                                                                        Mark Handled
+                                                                    </Link>
+                                                                </Button>
+                                                            )}
+                                                        </div>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        )}
+                                    </TableBody>
+                                </Table>
                             </div>
-                        </div>
-                    )}
+
+                            {/* Pagination */}
+                            {reminders.links && (
+                                <div className="px-6 py-4 border-t">
+                                    <div className="flex justify-between items-center">
+                                        <div className="text-sm text-gray-700">
+                                            Showing {reminders.from} to {reminders.to} of {reminders.total} results
+                                        </div>
+                                        <div className="flex space-x-2">
+                                            {reminders.links.map((link, index) => (
+                                                <Button
+                                                    key={index}
+                                                    onClick={() => {
+                                                        if (link.url) {
+                                                            window.location.href = link.url;
+                                                        }
+                                                    }}
+                                                    disabled={!link.url}
+                                                    variant={link.active ? 'primary' : 'outline'}
+                                                    size="sm"
+                                                >
+                                                    <span dangerouslySetInnerHTML={{ __html: link.label }} />
+                                                </Button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
                 </div>
-            </div>
+            </Container>
         </MainLayout>
     );
 }

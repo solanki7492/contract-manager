@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
     plugins: [
@@ -10,18 +11,11 @@ export default defineConfig({
             refresh: true,
         }),
         react(),
+        tailwindcss(),
     ],
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './resources/js'),
-            '@/src': path.resolve(__dirname, './resources/js/src'),
-            '@/components': path.resolve(__dirname, './resources/js/src/components'),
-            '@/layouts': path.resolve(__dirname, './resources/js/src/layouts'),
-            '@/pages': path.resolve(__dirname, './resources/js/src/pages'),
-            '@/hooks': path.resolve(__dirname, './resources/js/src/hooks'),
-            '@/lib': path.resolve(__dirname, './resources/js/src/lib'),
-            '@/config': path.resolve(__dirname, './resources/js/src/config'),
-            '@/providers': path.resolve(__dirname, './resources/js/src/providers'),
         },
     },
 });

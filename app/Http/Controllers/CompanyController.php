@@ -16,7 +16,7 @@ class CompanyController extends Controller
     public function __construct(
         protected CompanyService $companyService
     ) {
-        $this->middleware('superadmin');
+        //$this->middleware('superadmin');
     }
 
     public function index(Request $request): Response
