@@ -63,12 +63,7 @@ export const useMenu = (pathname: string): UseMenuReturn => {
       for (const item of nodes) {
         const currentBreadcrumb = [...breadcrumb, item];
 
-        // Check if this item is active
-        if (item.path && isActive(item.path)) {
-          return currentBreadcrumb; // Return the breadcrumb up to this point
-        }
-
-        // If item has children, recurse and check them
+        // First check if item has children and recurse into them
         if (item.children && item.children.length > 0) {
           const childBreadcrumb = findBreadcrumb(
             item.children,
@@ -77,6 +72,12 @@ export const useMenu = (pathname: string): UseMenuReturn => {
           if (childBreadcrumb.length > currentBreadcrumb.length) {
             return childBreadcrumb; // Return the deeper breadcrumb if found
           }
+        }
+
+        // Only check if this item is active after checking children
+        // This ensures we get the most specific match
+        if (item.path && isActive(item.path)) {
+          return currentBreadcrumb; // Return the breadcrumb up to this point
         }
       }
       return breadcrumb; // Return current breadcrumb if no match found

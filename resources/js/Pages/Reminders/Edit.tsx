@@ -25,27 +25,55 @@ interface Recipient {
     email?: string;
 }
 
-interface CreateReminderProps {
-    contracts: Contract[];
-    users: User[];
-    preselectedContractId?: string;
+interface Reminder {
+    id: number;
+    contract_id: number;
+    trigger_type: string;
+    days_before: number | null;
+    custom_date: string | null;
+    send_time: string;
+    channels: string[];
+    recipients: Recipient[];
+    notes: string | null;
 }
 
-export default function CreateReminder({ contracts, users, preselectedContractId }: CreateReminderProps) {
+interface EditReminderProps {
+    reminder: Reminder;
+    contracts: Contract[];
+    users: User[];
+}
+
+// Helper function to format date for input[type="date"]
+const formatDateForInput = (dateString: string | null | undefined): string => {
+    if (!dateString) return '';
+    // If it's already in YYYY-MM-DD format, return as is
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return dateString;
+    // Try to parse and format the date
+    try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return '';
+        return date.toISOString().split('T')[0];
+    } catch {
+        return '';
+    }
+};
+
+export default function EditReminder({ reminder, contracts, users }: EditReminderProps) {
     const { data, setData, post, processing, errors } = useForm({
-        contract_id: preselectedContractId || '',
-        trigger_type: 'before_end_date',
-        days_before: '30',
-        custom_date: '',
-        send_time: '09:00',
-        channels: ['email', 'in_app'] as string[],
-        recipients: [] as Recipient[],
-        notes: '',
+        _method: 'PUT',
+        contract_id: reminder.contract_id?.toString() || '',
+        trigger_type: reminder.trigger_type || 'before_end_date',
+        days_before: reminder.days_before?.toString() || '30',
+        custom_date: formatDateForInput(reminder.custom_date),
+        send_time: reminder.send_time || '09:00',
+        channels: reminder.channels || ['email', 'in_app'],
+        recipients: reminder.recipients || [] as Recipient[],
+        notes: reminder.notes || '',
     });
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        post('/reminders');
+        post(`/reminders/${reminder.id}`);
     };
 
     const addRecipient = (type: 'user' | 'external') => {
@@ -76,10 +104,10 @@ export default function CreateReminder({ contracts, users, preselectedContractId
                         <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2.5 font-semibold text-lg text-gray-900">
                                 <Bell className="size-5 text-gray-700" />
-                                Create New Reminder
+                                Edit Reminder
                             </div>
                             <p className="text-sm text-gray-600">
-                                Set up a new contract reminder
+                                Update reminder settings
                             </p>
                         </div>
                         <div className="flex items-center gap-2.5">
@@ -381,10 +409,10 @@ export default function CreateReminder({ contracts, users, preselectedContractId
                                 {processing ? (
                                     <>
                                         <Loader2 className="size-4 animate-spin" />
-                                        Creating...
+                                        Updating...
                                     </>
                                 ) : (
-                                    'Create Reminder'
+                                    'Update Reminder'
                                 )}
                             </Button>
                             <Button type="button" variant="outline" size="sm" asChild>

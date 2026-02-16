@@ -69,6 +69,21 @@ export const MENU_COMPANY: MenuConfig = [
     title: 'Reminders',
     path: '/reminders',
     icon: Bell,
+    children: [
+      {
+        title: 'All Reminders',
+        path: '/reminders',
+      },
+      {
+        title: 'Create',
+        path: '/reminders/create',
+        icon: Plus,
+      },
+      {
+        title: 'Edit',
+        path: '/reminders/:id/edit',
+      },
+    ],
   },
   {
     title: 'Contacts',
