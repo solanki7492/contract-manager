@@ -43,19 +43,30 @@ class UserController extends Controller
         ]);
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
         //$this->authorize('create', User::class);
 
-        return Inertia::render('Users/Create');
+        $data = [];
+        
+        if ($request->user()->isSuperAdmin()) {
+            $data['companies'] = \App\Models\Company::orderBy('name')->get(['id', 'name']);
+        }
+
+        return Inertia::render('Users/Create', $data);
     }
 
     public function store(StoreUserRequest $request): RedirectResponse
     {
         $temporaryPassword = Str::random(12);
 
+        // Superadmin can specify company_id, otherwise use authenticated user's company
+        $companyId = $request->user()->isSuperAdmin() && $request->filled('company_id')
+            ? $request->company_id
+            : $request->user()->company_id;
+
         $user = User::withoutGlobalScope('App\Scopes\CompanyScope')->create([
-            'company_id' => $request->user()->company_id,
+            'company_id' => $companyId,
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($temporaryPassword),
@@ -63,8 +74,11 @@ class UserController extends Controller
             'force_password_change' => true,
         ]);
 
+        // Get the company for notification
+        $company = \App\Models\Company::find($companyId);
+        
         $user->notify(new NewCompanyUserNotification(
-            $request->user()->company,
+            $company,
             $temporaryPassword
         ));
 

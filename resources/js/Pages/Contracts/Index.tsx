@@ -1,7 +1,7 @@
 import MainLayout from '../../Layouts/MainLayout';
 import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
-import { Plus, Eye, Edit } from 'lucide-react';
+import { Plus, Eye, Edit, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -61,7 +61,10 @@ export default function ContractsIndex({ contracts, contractTypes, filters }: Pa
             <Container>
                 <div className="space-y-6">
                     <div className="flex justify-between items-center">
-                        <h1 className="text-3xl font-bold text-mono">Contracts</h1>
+                        <div className="flex items-center gap-2.5">
+                            <FileText className="size-6 text-gray-700" />
+                            <h1 className="text-3xl font-bold text-mono">Contracts</h1>
+                        </div>
                         <Button asChild>
                             <Link href="/contracts/create">
                                 <Plus className="w-5 h-5" />

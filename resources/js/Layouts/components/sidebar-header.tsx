@@ -19,12 +19,12 @@ export function SidebarHeader() {
       <Link href="/dashboard">
         <div className="dark:hidden">
           <img
-            src={'/media/app/default-logo.svg'}
+            src={'/media/app/default-logo.png'}
             className="default-logo h-[22px] max-w-none"
             alt="Default Logo"
           />
           <img
-            src={'/media/app/mini-logo.svg'}
+            src={'/media/app/mini-logo.png'}
             className="small-logo h-[22px] max-w-none"
             alt="Mini Logo"
           />
@@ -36,7 +36,7 @@ export function SidebarHeader() {
             alt="Default Dark Logo"
           />
           <img
-            src={'/media/app/mini-logo.svg'}
+            src={'/media/app/mini-logo.png'}
             className="small-logo h-[22px] max-w-none"
             alt="Mini Logo"
           />

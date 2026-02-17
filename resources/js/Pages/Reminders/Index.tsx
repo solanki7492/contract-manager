@@ -1,6 +1,6 @@
 import MainLayout from '../../Layouts/MainLayout';
 import { Link, router } from '@inertiajs/react';
-import { Plus, Edit, Eye } from 'lucide-react';
+import { Plus, Edit, Eye, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -44,7 +44,10 @@ export default function RemindersIndex({ reminders }: PageProps) {
             <Container>
                 <div className="space-y-6">
                     <div className="flex justify-between items-center">
-                        <h1 className="text-3xl font-bold text-mono">Reminders</h1>
+                        <div className="flex items-center gap-2.5">
+                            <Bell className="size-6 text-gray-700" />
+                            <h1 className="text-3xl font-bold text-mono">Reminders</h1>
+                        </div>
                         <Button asChild>
                             <Link href="/reminders/create">
                                 <Plus className="w-5 h-5" />

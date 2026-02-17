@@ -1,5 +1,5 @@
 import MainLayout from '../../Layouts/MainLayout';
-import { useForm, Link } from '@inertiajs/react';
+import { useForm, Link, usePage } from '@inertiajs/react';
 import { FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,11 +8,33 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
 import { ArrowLeft, UserPlus, Loader2 } from 'lucide-react';
 
-export default function CreateUser() {
+interface Company {
+    id: number;
+    name: string;
+}
+
+interface CreateUserProps {
+    companies?: Company[];
+}
+
+interface PageProps {
+    auth?: {
+        user?: {
+            role?: string;
+        };
+    };
+    [key: string]: any;
+}
+
+export default function CreateUser({ companies }: CreateUserProps) {
+    const page = usePage<PageProps>();
+    const isSuperAdmin = page.props.auth?.user?.role === 'superadmin';
+
     const { data, setData, post, processing, errors } = useForm({
         name: '',
         email: '',
         role: 'user',
+        company_id: companies && companies.length > 0 ? companies[0].id.toString() : '',
     });
 
     const submit = (e: FormEvent) => {
@@ -89,6 +111,33 @@ export default function CreateUser() {
                                             A temporary password will be sent to this email address
                                         </p>
                                     </div>
+
+                                    {/* Company - Only for Superadmin */}
+                                    {isSuperAdmin && companies && companies.length > 0 && (
+                                        <div className="w-full">
+                                            <Label htmlFor="company_id" className="text-sm font-medium text-gray-900 mb-2 block">
+                                                Company <span className="text-red-500">*</span>
+                                            </Label>
+                                            <select
+                                                id="company_id"
+                                                value={data.company_id}
+                                                onChange={(e) => setData('company_id', e.target.value)}
+                                                className="w-full h-10 px-3 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                required
+                                            >
+                                                <option value="">Select a company</option>
+                                                {companies.map((company) => (
+                                                    <option key={company.id} value={company.id}>
+                                                        {company.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            {errors.company_id && <div className="mt-1.5 text-xs text-red-600">{errors.company_id}</div>}
+                                            <p className="mt-1.5 text-xs text-gray-500">
+                                                Select which company this user belongs to
+                                            </p>
+                                        </div>
+                                    )}
 
                                     {/* Role */}
                                     <div className="w-full">

@@ -15,10 +15,17 @@ class StoreUserRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'role' => ['required', Rule::enum(UserRole::class)->except(UserRole::SUPERADMIN)],
         ];
+
+        // Add company_id validation for superadmin
+        if ($this->user()->isSuperAdmin()) {
+            $rules['company_id'] = ['required', 'exists:companies,id'];
+        }
+
+        return $rules;
     }
 }

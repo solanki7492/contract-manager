@@ -7,7 +7,6 @@ import {
   Bell,
   Menu,
 } from 'lucide-react';
-import { toAbsoluteUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useScrollPosition } from '@/hooks/use-scroll-position';
@@ -50,7 +49,7 @@ export function Header() {
         <div className="flex gap-1 lg:hidden items-center gap-2.5">
           <Link href="/dashboard" className="shrink-0">
             <img
-              src={toAbsoluteUrl('/media/app/mini-logo.svg')}
+              src={'/media/app/mini-logo.png'}
               className="h-[25px] w-full"
               alt="mini-logo"
             />
