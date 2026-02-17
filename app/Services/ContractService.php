@@ -75,7 +75,7 @@ class ContractService
 
     protected function uploadFile(UploadedFile $file, int $companyId): array
     {
-        $path = Storage::disk('s3')->putFile(
+        $path = Storage::disk('local')->putFile(
             "companies/{$companyId}/contracts",
             $file,
             'private'
@@ -95,7 +95,7 @@ class ContractService
             return null;
         }
 
-        return Storage::disk('s3')->temporaryUrl(
+        return Storage::disk('local')->temporaryUrl(
             $contract->file_path,
             now()->addMinutes(60)
         );
