@@ -20,7 +20,7 @@ export function SidebarHeader() {
         <div className="dark:hidden">
           <img
             src={'/media/app/default-logo.png'}
-            className="default-logo h-[22px] max-w-none"
+            className="default-logo h-[38px] max-w-none"
             alt="Default Logo"
           />
           <img
