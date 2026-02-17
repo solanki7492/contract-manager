@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
 import { ArrowLeft, UserCog, Loader2, Trash2 } from 'lucide-react';
+import { Head } from '@inertiajs/react';
 
 interface User {
     id: number;
@@ -39,6 +40,9 @@ export default function EditUser({ user }: EditUserProps) {
 
     return (
         <MainLayout>
+            <Head>
+                <title>Edit User</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     {/* Page Header */}

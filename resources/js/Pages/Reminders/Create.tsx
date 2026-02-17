@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
 import { ArrowLeft, Bell, Calendar, Users, MessageSquare, Plus, Trash2, Loader2 } from 'lucide-react';
+import { Head } from '@inertiajs/react';
 
 interface Contract {
     id: number;
@@ -69,6 +70,9 @@ export default function CreateReminder({ contracts, users, preselectedContractId
 
     return (
         <MainLayout>
+            <Head>
+                <title>Create Reminder</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     {/* Page Header */}

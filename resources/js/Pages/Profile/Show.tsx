@@ -6,6 +6,7 @@ import EditProfileForm from '@/components/profile/EditProfileForm';
 import ChangePasswordForm from '@/components/profile/ChangePasswordForm';
 import ContractTypesManagement from '@/components/profile/ContractTypesManagement';
 import { Container } from '@/components/common/container';
+import { Head } from '@inertiajs/react';
 
 interface User {
     id: number;
@@ -33,6 +34,9 @@ export default function Show() {
 
     return (
         <MainLayout>
+            <Head>
+                <title>Profile</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     <div className="max-w-7xl mx-auto">

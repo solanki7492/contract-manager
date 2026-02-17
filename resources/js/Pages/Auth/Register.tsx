@@ -3,6 +3,7 @@ import { useForm, usePage } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
 import AuthLayout from '../../Layouts/AuthLayout';
 import { Eye, EyeOff, Loader2, Info, XCircle, CheckCircle, X } from 'lucide-react';
+import { Head } from '@inertiajs/react';
 
 type FormData = {
     name: string;
@@ -52,6 +53,9 @@ export default function Register() {
 
     return (
         <AuthLayout>
+            <Head>
+                <title>Register</title>
+            </Head>
             <form onSubmit={submit} className="space-y-5 w-full">
                 <div className="text-center space-y-1 pb-3">
                     <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Sign Up</h1>

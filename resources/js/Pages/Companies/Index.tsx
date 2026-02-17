@@ -8,6 +8,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Container } from '@/components/common/container';
+import { Head } from '@inertiajs/react'
+
 
 interface Company {
     id: number;
@@ -46,6 +48,9 @@ export default function Index() {
 
     return (
         <MainLayout>
+            <Head>
+                <title>Companies</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     {/* Header */}

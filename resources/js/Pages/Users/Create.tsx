@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
 import { ArrowLeft, UserPlus, Loader2 } from 'lucide-react';
+import { Head } from '@inertiajs/react';
 
 interface Company {
     id: number;
@@ -44,6 +45,9 @@ export default function CreateUser({ companies }: CreateUserProps) {
 
     return (
         <MainLayout>
+            <Head>
+                <title>Create User</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     {/* Page Header */}

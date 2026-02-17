@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
+import { Head } from '@inertiajs/react';
 
 interface ContractType {
     id: number;
@@ -60,6 +61,9 @@ interface ShowContractProps {
 export default function ShowContract({ contract, downloadUrl }: ShowContractProps) {
     return (
         <MainLayout>
+            <Head>
+                <title>Contract Details</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     {/* Page Header */}

@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Container } from '@/components/common/container';
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
+import { Head } from '@inertiajs/react';
 
 interface Company {
     id: number;
@@ -87,6 +88,9 @@ export default function UsersIndex({ users, filters }: PageProps) {
 
     return (
         <MainLayout>
+            <Head>
+                <title>Users</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     <div className="flex justify-between items-center">

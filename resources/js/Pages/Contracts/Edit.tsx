@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
 import { DatePicker } from '@/components/ui/date-picker';
 import { ArrowLeft, FileText, Calendar, Clock, FileUp, Loader2 } from 'lucide-react';
+import { Head } from '@inertiajs/react';
 
 interface ContractType {
     id: number;
@@ -68,6 +69,9 @@ export default function EditContract({ contract, contractTypes }: EditContractPr
 
     return (
         <MainLayout>
+            <Head>
+                <title>Edit Contract</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     {/* Page Header */}

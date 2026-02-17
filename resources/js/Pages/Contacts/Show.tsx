@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Container } from '@/components/common/container';
 import { Separator } from '@/components/ui/separator';
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
+import { Head } from '@inertiajs/react';
 
 interface User {
     id: number;
@@ -32,6 +33,9 @@ interface ShowContactProps {
 export default function ShowContact({ contact }: ShowContactProps) {
     return (
         <MainLayout>
+            <Head>
+                <title>Contact Details</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     {/* Page Header */}

@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
 import { ArrowLeft, FileText, Calendar, Clock, FileUp } from 'lucide-react';
+import { Head } from '@inertiajs/react';
 
 interface ContractType {
     id: number;
@@ -37,6 +38,9 @@ export default function CreateContract({ contractTypes }: CreateContractProps) {
 
     return (
         <MainLayout>
+            <Head>
+                <title>Create Contract</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     {/* Page Header */}

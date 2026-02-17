@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Head } from '@inertiajs/react';
 
 interface Company {
     id: number;
@@ -53,6 +54,9 @@ export default function Edit({ company }: PageProps) {
 
     return (
         <MainLayout>
+            <Head>
+                <title>Edit Company</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     {/* Page Header */}

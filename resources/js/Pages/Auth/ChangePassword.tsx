@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Loader2, Info, AlertCircle, CheckCircle } from 'lucide-react';
+import { Head } from '@inertiajs/react';
 
 type FormData = {
     current_password: string;
@@ -32,6 +33,9 @@ export default function ChangePassword() {
 
     return (
         <AuthLayout>
+            <Head>
+                <title>Change Password</title>
+            </Head>
             <Card>
                 <CardHeader className='p-4'>
                     <CardTitle>Change Password</CardTitle>

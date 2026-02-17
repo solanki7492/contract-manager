@@ -7,6 +7,7 @@ import { Container } from '@/components/common/container';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
+import { Head } from '@inertiajs/react';
 
 interface Contract {
     id: number;
@@ -58,6 +59,9 @@ export default function ShowReminder({ reminder }: ShowReminderProps) {
 
     return (
         <MainLayout>
+            <Head>
+                <title>Reminder Details</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     {/* Page Header */}

@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import { Container } from '@/components/common/container';
+import { Head } from '@inertiajs/react';
 
 interface Contract {
     id: number;
@@ -84,6 +85,9 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders,
     if (isSuperAdmin) {
         return (
             <MainLayout>
+                <Head>
+                    <title>Dashboard</title>
+                </Head>
                 <Container>
                     <div className="space-y-6">
                         {/* Page Header */}

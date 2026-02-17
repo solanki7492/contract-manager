@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
 import { ArrowLeft, Users, Mail, Phone, Building2, FileText } from 'lucide-react';
+import { Head } from '@inertiajs/react';
 
 export default function CreateContact() {
     const { data, setData, post, processing, errors } = useForm({
@@ -24,6 +25,9 @@ export default function CreateContact() {
 
     return (
         <MainLayout>
+            <Head>
+                <title>Create Contact</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     {/* Page Header */}

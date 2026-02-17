@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertIcon, AlertContent, AlertDescription } from '@/components/ui/alert';
+import { Head } from '@inertiajs/react';
 
 type FormData = {
     email: string;
@@ -51,6 +52,9 @@ export default function Login() {
 
     return (
         <AuthLayout>
+            <Head>
+                <title>Login</title>
+            </Head>
             <form onSubmit={submit} className="space-y-5 w-full">
                 <div className="text-center space-y-1 pb-3">
                     <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Sign In</h1>

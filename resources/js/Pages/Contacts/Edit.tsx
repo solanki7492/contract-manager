@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
 import { ArrowLeft, Users, Mail, Phone, Building2, FileText, Loader2 } from 'lucide-react';
+import { Head } from '@inertiajs/react';
 
 interface Contact {
     id: number;
@@ -37,6 +38,9 @@ export default function EditContact({ contact }: EditContactProps) {
 
     return (
         <MainLayout>
+            <Head>
+                <title>Edit Contact</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     {/* Page Header */}

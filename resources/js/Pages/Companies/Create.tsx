@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
+import { Head } from '@inertiajs/react';
 
 export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
@@ -39,6 +40,9 @@ export default function Create() {
 
     return (
         <MainLayout>
+            <Head>
+                <title>Create Company</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     {/* Page Header */}

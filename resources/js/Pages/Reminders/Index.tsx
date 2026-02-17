@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Container } from '@/components/common/container';
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
+import { Head } from '@inertiajs/react';
 
 interface Contract {
     id: number;
@@ -41,6 +42,9 @@ interface PageProps {
 export default function RemindersIndex({ reminders }: PageProps) {
     return (
         <MainLayout>
+            <Head>
+                <title>Reminders</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     <div className="flex justify-between items-center">

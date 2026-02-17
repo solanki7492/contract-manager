@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Container } from '@/components/common/container';
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
+import { Head } from '@inertiajs/react';
 
 interface Contact {
     id: number;
@@ -45,6 +46,9 @@ export default function ContactsIndex({ contacts, filters }: PageProps) {
 
     return (
         <MainLayout>
+            <Head>
+                <title>Contacts</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     <div className="flex justify-between items-center">

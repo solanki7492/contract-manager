@@ -1,5 +1,5 @@
 import MainLayout from '../../Layouts/MainLayout';
-import { Link, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { Plus, Eye, Edit, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -58,6 +58,9 @@ export default function ContractsIndex({ contracts, contractTypes, filters }: Pa
 
     return (
         <MainLayout>
+            <Head>
+                <title>Contracts</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     <div className="flex justify-between items-center">

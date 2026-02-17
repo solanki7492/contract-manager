@@ -9,6 +9,7 @@ import { Container } from '@/components/common/container';
 import { DatePicker } from '@/components/ui/date-picker';
 import { TimePicker } from '@/components/ui/time-picker';
 import { ArrowLeft, Bell, Calendar, Users, MessageSquare, Plus, Trash2, Loader2 } from 'lucide-react';
+import { Head } from '@inertiajs/react';
 
 interface Contract {
     id: number;
@@ -99,6 +100,9 @@ export default function EditReminder({ reminder, contracts, users }: EditReminde
 
     return (
         <MainLayout>
+            <Head>
+                <title>Edit Reminder</title>
+            </Head>
             <Container>
                 <div className="space-y-6">
                     {/* Page Header */}

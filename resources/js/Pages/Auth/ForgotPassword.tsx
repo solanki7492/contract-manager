@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Info, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react';
+import { Head } from '@inertiajs/react';
 
 type FormData = {
     email: string;
@@ -24,6 +25,9 @@ export default function ForgotPassword() {
 
     return (
         <AuthLayout>
+            <Head>
+                <title>Forgot Password</title>
+            </Head>
             <div className="w-full max-w-md">
                 <Card>
                     <CardHeader>
