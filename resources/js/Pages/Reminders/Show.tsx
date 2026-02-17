@@ -1,11 +1,12 @@
 import MainLayout from '../../Layouts/MainLayout';
 import { Link, router } from '@inertiajs/react';
-import { ArrowLeft, Bell, Calendar, Users, MessageSquare, Edit, Trash2, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Bell, Calendar, Users, MessageSquare, Edit, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 
 interface Contract {
     id: number;
@@ -49,12 +50,6 @@ interface ShowReminderProps {
 }
 
 export default function ShowReminder({ reminder }: ShowReminderProps) {
-    const handleDelete = () => {
-        if (confirm('Are you sure you want to delete this reminder?')) {
-            router.delete(`/reminders/${reminder.id}`);
-        }
-    };
-
     const handleMarkAsHandled = () => {
         if (confirm('Mark this reminder as handled?')) {
             router.post(`/reminders/${reminder.id}/handle`);
@@ -88,27 +83,26 @@ export default function ShowReminder({ reminder }: ShowReminderProps) {
 
                     {/* Reminder Information */}
                     <Card>
-                        <CardHeader className="border-b border-gray-200 p-3">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <CardTitle className="text-2xl font-bold">
-                                        {reminder.contract?.title || 'No Contract'}
-                                    </CardTitle>
-                                    <CardDescription className="mt-1">
-                                        Created {new Date(reminder.created_at).toLocaleDateString()} by {reminder.creator?.name}
-                                    </CardDescription>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Badge variant={
-                                        reminder.status === 'pending' ? 'secondary' :
-                                            reminder.status === 'sent' ? 'success' :
-                                                reminder.status === 'handled' ? 'outline' :
-                                                    'destructive'
-                                    }>
-                                        {reminder.status}
-                                    </Badge>
-                                </div>
+                        <CardHeader className="border-b border-gray-200 p-3 flex items-center justify-between p-4">
+                            <div>
+                                <CardTitle className="text-2xl font-bold">
+                                    {reminder.contract?.title || 'No Contract'}
+                                </CardTitle>
+                                <CardDescription className="mt-1">
+                                    Created {new Date(reminder.created_at).toLocaleDateString()} by {reminder.creator?.name}
+                                </CardDescription>
                             </div>
+
+                            <Badge
+                                variant={
+                                    reminder.status === 'pending' ? 'secondary' :
+                                        reminder.status === 'sent' ? 'success' :
+                                            reminder.status === 'handled' ? 'outline' :
+                                                'destructive'
+                                }
+                            >
+                                {reminder.status}
+                            </Badge>
                         </CardHeader>
                         <CardContent className="p-7.5">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -205,15 +199,11 @@ export default function ShowReminder({ reminder }: ShowReminderProps) {
                                         Edit
                                     </Link>
                                 </Button>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={handleDelete}
-                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                >
-                                    <Trash2 className="size-4" />
-                                    Delete
-                                </Button>
+                                <DeleteConfirmDialog
+                                    title="Delete Reminder?"
+                                    description={`Are you sure you want to delete this reminder for "${reminder.contract?.title || 'this contract'}"? This action cannot be undone.`}
+                                    onConfirm={() => router.delete(`/reminders/${reminder.id}`)}
+                                />
                             </div>
                         </CardContent>
                     </Card>

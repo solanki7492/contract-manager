@@ -10,9 +10,19 @@ class NotificationController extends Controller
     {
         $notifications = $request->user()
             ->notifications()
+            ->latest()
             ->paginate(20);
 
-        return response()->json($notifications);
+        $unreadCount = $request->user()->unreadNotifications()->count();
+
+        return response()->json([
+            'data' => $notifications->items(),
+            'unread_count' => $unreadCount,
+            'current_page' => $notifications->currentPage(),
+            'last_page' => $notifications->lastPage(),
+            'per_page' => $notifications->perPage(),
+            'total' => $notifications->total(),
+        ]);
     }
 
     public function markAsRead(Request $request, string $id)
@@ -23,13 +33,19 @@ class NotificationController extends Controller
 
         $notification->markAsRead();
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'unread_count' => $request->user()->unreadNotifications()->count(),
+        ]);
     }
 
     public function markAllAsRead(Request $request)
     {
         $request->user()->unreadNotifications->markAsRead();
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'unread_count' => 0,
+        ]);
     }
 }

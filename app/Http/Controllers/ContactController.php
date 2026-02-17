@@ -47,6 +47,15 @@ class ContactController extends Controller
             ->with('success', 'Contact created successfully.');
     }
 
+    public function show(Contact $contact): Response
+    {
+        $contact->load('creator');
+
+        return Inertia::render('Contacts/Show', [
+            'contact' => $contact,
+        ]);
+    }
+
     public function edit(Contact $contact): Response
     {
         return Inertia::render('Contacts/Edit', [

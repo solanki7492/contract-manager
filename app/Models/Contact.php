@@ -19,15 +19,27 @@ class Contact extends Model
         'phone',
         'organization',
         'notes',
+        'created_by',
     ];
 
     protected static function booted(): void
     {
         static::addGlobalScope(new CompanyScope);
+
+        static::creating(function ($contact) {
+            if (auth()->check() && !$contact->created_by) {
+                $contact->created_by = auth()->id();
+            }
+        });
     }
 
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

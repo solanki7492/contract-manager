@@ -8,8 +8,10 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\ContractTypeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -44,7 +46,7 @@ Route::middleware(['auth', 'company.context'])->group(function () {
         Route::resource('reminders', ReminderController::class);
         Route::post('/reminders/{reminder}/handle', [ReminderController::class, 'markAsHandled'])->name('reminders.handle');
 
-        Route::resource('contacts', ContactController::class)->except(['show']);
+        Route::resource('contacts', ContactController::class);
 
         Route::resource('users', UserController::class);
 
@@ -58,6 +60,19 @@ Route::middleware(['auth', 'company.context'])->group(function () {
             Route::post('/read-all', [NotificationController::class, 'markAllAsRead'])->name('read-all');
         });
 
+        // Profile routes
+        Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+
+        // Contract Types routes (only for company admins)
+        Route::middleware('can:manage,App\Models\ContractType')->group(function () {
+            Route::post('/contract-types', [ContractTypeController::class, 'store'])->name('contract-types.store');
+            Route::put('/contract-types/{contractType}', [ContractTypeController::class, 'update'])->name('contract-types.update');
+            Route::delete('/contract-types/{contractType}', [ContractTypeController::class, 'destroy'])->name('contract-types.destroy');
+        });
+
+        // Legacy password change route (for backward compatibility)
         Route::get('/profile/password', [PasswordController::class, 'showChangeForm'])->name('profile.password');
         Route::put('/profile/password', [PasswordController::class, 'update'])->name('profile.password.update');
     });

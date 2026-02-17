@@ -6,7 +6,9 @@ use App\Enums\RecipientType;
 use App\Enums\ReminderChannel;
 use App\Models\Reminder;
 use App\Models\User;
+use App\Notifications\ReminderCreatedNotification;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class ReminderService
 {
@@ -22,6 +24,11 @@ class ReminderService
             $reminder = Reminder::create($data);
 
             $this->attachRecipients($reminder, $recipients);
+
+            // Notify all company users about the new reminder
+            $companyUsers = User::where('company_id', $user->company_id)->get();
+            
+            Notification::send($companyUsers, new ReminderCreatedNotification($reminder, $user));
 
             return $reminder->load(['contract', 'recipients.user']);
         });

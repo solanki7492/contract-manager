@@ -1,13 +1,14 @@
 import MainLayout from '../../Layouts/MainLayout';
 import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
-import { Plus, Users as UsersIcon } from 'lucide-react';
+import { Plus, Users as UsersIcon, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Container } from '@/components/common/container';
+import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 
 interface Company {
     id: number;
@@ -75,6 +76,14 @@ export default function UsersIndex({ users, filters }: PageProps) {
                 return userRole;
         }
     };
+
+    const handleDeleteUser = (userId: number) => {
+        router.delete(`/users/${userId}`, {
+            onSuccess: () => {
+                // Optionally show a success message or refresh the list
+            },
+        });
+    }
 
     return (
         <MainLayout>
@@ -187,9 +196,16 @@ export default function UsersIndex({ users, filters }: PageProps) {
                                                         <div className="flex gap-2">
                                                             <Button variant="ghost" size="sm" asChild>
                                                                 <Link href={`/users/${user.id}/edit`}>
+                                                                    <Edit className="size-4" />
                                                                     Edit
                                                                 </Link>
                                                             </Button>
+                                                            <DeleteConfirmDialog
+                                                                title="Are you sure?"
+                                                                description="This action cannot be undone. This will permanently delete this user."
+                                                                onConfirm={() => handleDeleteUser(user.id)}
+                                                                variant="icon"
+                                                            />
                                                         </div>
                                                     </TableCell>
                                                 </TableRow>

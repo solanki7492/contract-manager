@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Models\Contract;
 use App\Models\User;
+use App\Notifications\ContractCreatedNotification;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 class ContractService
@@ -27,6 +29,11 @@ class ContractService
             $data['created_by'] = $user->id;
 
             $contract = Contract::create($data);
+
+            // Notify all company users about the new contract
+            $companyUsers = User::where('company_id', $user->company_id)->get();
+            
+            Notification::send($companyUsers, new ContractCreatedNotification($contract, $user));
 
             return $contract->load(['contractType', 'creator']);
         });

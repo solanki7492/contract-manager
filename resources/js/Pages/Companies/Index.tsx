@@ -52,7 +52,7 @@ export default function Index() {
                     <div className="flex items-center justify-between">
                         <div>
                             <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                                <Building2 className="w-7 h-7 text-blue-600" />
+                                <Building2 className="w-7 h-7" />
                                 Companies
                             </h1>
                             <p className="text-sm text-gray-600 mt-1">Manage companies and their users</p>

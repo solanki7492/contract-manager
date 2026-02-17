@@ -6,7 +6,6 @@ import {
   Settings,
   Users,
   UserPlus,
-  Plus,
   UserCog
 } from 'lucide-react';
 import { type MenuConfig } from './types';
@@ -23,21 +22,6 @@ export const MENU_SUPERADMIN: MenuConfig = [
     title: 'Companies',
     path: '/companies',
     icon: Building,
-    children: [
-      {
-        title: 'All Companies',
-        path: '/companies',
-      },
-      {
-        title: 'Create',
-        path: '/companies/create',
-        icon: Plus,
-      },
-      {
-        title: 'Edit',
-        path: '/companies/:id/edit',
-      },
-    ],
   },
   {
     title: 'Company Users',
@@ -47,7 +31,7 @@ export const MENU_SUPERADMIN: MenuConfig = [
   { heading: 'Settings' },
   {
     title: 'Profile',
-    path: '/profile/password',
+    path: '/profile',
     icon: Settings,
   },
 ];
@@ -83,7 +67,7 @@ export const MENU_COMPANY: MenuConfig = [
   { heading: 'Settings' },
   {
     title: 'Profile',
-    path: '/profile/password',
+    path: '/profile',
     icon: Settings,
   },
 ];

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import { NotificationsSheet } from '@/partials/topbar/notifications-sheet';
 import { UserDropdownMenu } from '@/partials/topbar/user-dropdown-menu';
+import { useNotificationCount } from '@/hooks/use-notification-count';
 import {
   Bell,
   Menu,
@@ -24,6 +25,7 @@ import { SidebarMenu } from './sidebar-menu';
 
 export function Header() {
   const [isSidebarSheetOpen, setIsSidebarSheetOpen] = useState(false);
+  const { unreadCount, refreshCount } = useNotificationCount();
 
   const { url: pathname } = usePage();
   const mobileMode = useIsMobile();
@@ -85,14 +87,20 @@ export function Header() {
         {/* HeaderTopbar */}
         <div className="flex items-center gap-3">
           <NotificationsSheet
+            onUnreadCountChange={refreshCount}
             trigger={
               <Button
                 variant="ghost"
                 mode="icon"
                 shape="circle"
-                className="size-9 hover:bg-primary/10 hover:[&_svg]:text-primary"
+                className="size-9 hover:bg-primary/10 hover:[&_svg]:text-primary relative"
               >
                 <Bell className="size-4.5!" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-semibold text-white bg-red-500 rounded-full">
+                    {unreadCount > 99 ? '99+' : unreadCount}
+                  </span>
+                )}
               </Button>
             }
           />

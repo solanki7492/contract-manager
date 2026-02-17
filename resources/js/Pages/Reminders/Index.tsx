@@ -1,11 +1,12 @@
 import MainLayout from '../../Layouts/MainLayout';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { Plus, Edit, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Container } from '@/components/common/container';
+import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 
 interface Contract {
     id: number;
@@ -115,6 +116,12 @@ export default function RemindersIndex({ reminders }: PageProps) {
                                                                     Edit
                                                                 </Link>
                                                             </Button>
+                                                            <DeleteConfirmDialog
+                                                                title="Delete Reminder?"
+                                                                description={`Are you sure you want to delete the reminder for "${reminder.contract?.title || 'this contract'}"? This action cannot be undone.`}
+                                                                onConfirm={() => router.delete(`/reminders/${reminder.id}`)}
+                                                                variant="icon"
+                                                            />
                                                             {reminder.status === 'sent' && (
                                                                 <Button
                                                                     variant="ghost"

@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Container } from '@/components/common/container';
+import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 
 interface ContractType {
     id: number;
@@ -186,6 +187,12 @@ export default function ContractsIndex({ contracts, contractTypes, filters }: Pa
                                                                     Edit
                                                                 </Link>
                                                             </Button>
+                                                            <DeleteConfirmDialog
+                                                                title="Delete Contract?"
+                                                                description={`Are you sure you want to delete "${contract.title}"? This action cannot be undone.`}
+                                                                onConfirm={() => router.delete(`/contracts/${contract.id}`)}
+                                                                variant="icon"
+                                                            />
                                                         </div>
                                                     </TableCell>
                                                 </TableRow>

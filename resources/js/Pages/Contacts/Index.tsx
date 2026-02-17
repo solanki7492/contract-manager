@@ -1,12 +1,13 @@
 import MainLayout from '../../Layouts/MainLayout';
 import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
-import { Plus, Users, Mail, Phone, Building2, Trash2, Eye } from 'lucide-react';
+import { Plus, Users, Mail, Phone, Building2, Eye, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Container } from '@/components/common/container';
+import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 
 interface Contact {
     id: number;
@@ -40,12 +41,6 @@ export default function ContactsIndex({ contacts, filters }: PageProps) {
     const handleReset = () => {
         setSearch('');
         router.get('/contacts');
-    };
-
-    const handleDelete = (contact: Contact) => {
-        if (confirm(`Are you sure you want to delete ${contact.name}?`)) {
-            router.delete(`/contacts/${contact.id}`);
-        }
     };
 
     return (
@@ -166,15 +161,18 @@ export default function ContactsIndex({ contacts, filters }: PageProps) {
                                                                     View
                                                                 </Link>
                                                             </Button>
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="sm"
-                                                                onClick={() => handleDelete(contact)}
-                                                                className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                                            >
-                                                                <Trash2 className="size-4" />
-                                                                Delete
+                                                            <Button variant="ghost" size="sm" asChild>
+                                                                <Link href={`/contacts/${contact.id}/edit`}>
+                                                                    <Edit className="size-4" />
+                                                                    Edit
+                                                                </Link>
                                                             </Button>
+                                                            <DeleteConfirmDialog
+                                                                title="Delete Contact?"
+                                                                description={`Are you sure you want to delete "${contact.name}"? This action cannot be undone.`}
+                                                                onConfirm={() => router.delete(`/contacts/${contact.id}`)}
+                                                                variant="icon"
+                                                            />
                                                         </div>
                                                     </TableCell>
                                                 </TableRow>

@@ -1,12 +1,13 @@
 import MainLayout from '../../Layouts/MainLayout';
 import { Link, router } from '@inertiajs/react';
-import { ArrowLeft, FileText, Download, Edit, Trash2, Plus, Bell } from 'lucide-react';
+import { ArrowLeft, FileText, Download, Edit, Plus, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
+import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 
 interface ContractType {
     id: number;
@@ -57,12 +58,6 @@ interface ShowContractProps {
 }
 
 export default function ShowContract({ contract, downloadUrl }: ShowContractProps) {
-    const handleDelete = () => {
-        if (confirm('Are you sure you want to delete this contract?')) {
-            router.delete(`/contracts/${contract.id}`);
-        }
-    };
-
     return (
         <MainLayout>
             <Container>
@@ -90,24 +85,20 @@ export default function ShowContract({ contract, downloadUrl }: ShowContractProp
 
                     {/* Contract Information */}
                     <Card>
-                        <CardHeader className="border-b border-gray-200 p-3">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <CardTitle className="text-2xl font-bold">{contract.title}</CardTitle>
-                                    <CardDescription className="mt-1">
-                                        Created {new Date(contract.created_at).toLocaleDateString()} by {contract.creator?.name}
-                                    </CardDescription>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Badge variant={
-                                        contract.status === 'active' ? 'success' :
-                                            contract.status === 'expiring' ? 'warning' :
-                                                'destructive'
-                                    }>
-                                        {contract.status}
-                                    </Badge>
-                                </div>
+                        <CardHeader className="border-b border-gray-200 flex items-center justify-between p-4">
+                            <div>
+                                <CardTitle className="text-2xl font-bold">{contract.title}</CardTitle>
+                                <CardDescription className="mt-1">
+                                    Created {new Date(contract.created_at).toLocaleDateString()} by {contract.creator?.name}
+                                </CardDescription>
                             </div>
+                            <Badge variant={
+                                contract.status === 'active' ? 'success' :
+                                    contract.status === 'expiring' ? 'warning' :
+                                        'destructive'
+                            }>
+                                {contract.status}
+                            </Badge>
                         </CardHeader>
                         <CardContent className="p-7.5">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -173,39 +164,33 @@ export default function ShowContract({ contract, downloadUrl }: ShowContractProp
                                         Edit
                                     </Link>
                                 </Button>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={handleDelete}
-                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                >
-                                    <Trash2 className="size-4" />
-                                    Delete
-                                </Button>
+                                <DeleteConfirmDialog
+                                    title="Delete Contract?"
+                                    description={`Are you sure you want to delete "${contract.title}"? This will also delete all associated reminders. This action cannot be undone.`}
+                                    onConfirm={() => router.delete(`/contracts/${contract.id}`)}
+                                />
                             </div>
                         </CardContent>
                     </Card>
 
                     {/* Reminders Section */}
                     <Card>
-                        <CardHeader className="border-b border-gray-200">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <CardTitle className="text-base font-semibold flex items-center gap-2">
-                                        <Bell className="size-4" />
-                                        Reminders
-                                    </CardTitle>
-                                    <CardDescription className="mt-1">
-                                        Reminders associated with this contract
-                                    </CardDescription>
-                                </div>
-                                <Button variant="outline" size="sm" asChild>
-                                    <Link href={`/reminders/create?contract_id=${contract.id}`}>
-                                        <Plus className="size-4" />
-                                        Add Reminder
-                                    </Link>
-                                </Button>
+                        <CardHeader className="border-b border-gray-200 flex items-center justify-between p-4">
+                            <div>
+                                <CardTitle className="text-base font-semibold flex items-center gap-2">
+                                    <Bell className="size-4" />
+                                    Reminders
+                                </CardTitle>
+                                <CardDescription className="mt-1">
+                                    Reminders associated with this contract
+                                </CardDescription>
                             </div>
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href={`/reminders/create?contract_id=${contract.id}`}>
+                                    <Plus className="size-4" />
+                                    Add Reminder
+                                </Link>
+                            </Button>
                         </CardHeader>
                         <CardContent className="p-0">
                             {!contract.reminders || contract.reminders.length === 0 ? (
