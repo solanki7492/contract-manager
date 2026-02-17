@@ -130,7 +130,7 @@ class ReminderController extends Controller
 
     public function destroy(Reminder $reminder): RedirectResponse
     {
-        $this->authorize('delete', $reminder);
+        //$this->authorize('delete', $reminder);
 
         $this->reminderService->delete($reminder);
 
@@ -140,7 +140,7 @@ class ReminderController extends Controller
 
     public function markAsHandled(Request $request, Reminder $reminder): RedirectResponse
     {
-        $this->authorize('handle', $reminder);
+        //$this->authorize('handle', $reminder);
 
         $this->reminderService->markAsHandled($reminder, $request->user());
 
