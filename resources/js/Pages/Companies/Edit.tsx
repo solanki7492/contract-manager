@@ -201,10 +201,11 @@ export default function Edit({ company }: PageProps) {
                                     )}
                                 </Button>
                             </div>
+                            </CardContent>
+                            </Card>
                         </form>
-                    </CardContent>
-                </Card>
-            </div>
+                    </div>
+            </Container>
         </MainLayout>
     );
 }
