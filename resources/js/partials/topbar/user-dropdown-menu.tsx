@@ -4,11 +4,9 @@ import { I18N_LANGUAGES } from '@/i18n/config';
 import { Language } from '@/i18n/types';
 import {
   BetweenHorizontalStart,
-  Coffee,
   CreditCard,
   FileText,
   Globe,
-  IdCard,
   Moon,
   Settings,
   Shield,
@@ -18,7 +16,6 @@ import {
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Link, usePage } from '@inertiajs/react';
-import { toAbsoluteUrl } from '@/lib/helpers';
 import { useLanguage } from '@/providers/i18n-provider';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -52,7 +49,7 @@ export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
 
   const displayEmail = user?.email || '';
   // const displayAvatar = user?.pic || toAbsoluteUrl('/media/avatars/300-2.png');
-  const displayAvatar = toAbsoluteUrl('/media/avatars/300-2.png');
+  const displayAvatar = '/media/avatars/300-2.png';
 
   const displayRole = user?.role ? user.role === 'super_admin' ? 'Super Admin' : 'Admin' : 'User';
 
