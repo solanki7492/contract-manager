@@ -108,7 +108,7 @@ export function Header() {
             trigger={
               <img
                 className="size-9 rounded-full border-2 border-green-500 shrink-0 cursor-pointer"
-                src={toAbsoluteUrl('/media/avatars/300-2.png')}
+                src={'/media/avatars/300-2.png'}
                 alt="User Avatar"
               />
             }
