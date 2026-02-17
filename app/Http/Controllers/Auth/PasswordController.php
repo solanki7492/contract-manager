@@ -13,10 +13,9 @@ use Inertia\Response;
 
 class PasswordController extends Controller
 {
-    public function showChangeForm(): RedirectResponse
+    public function showChangeForm(): Response
     {
-        // Redirect to profile page instead
-        return redirect()->route('profile.show');
+        return Inertia::render('Auth/ChangePassword');
     }
 
     public function change(Request $request): RedirectResponse
