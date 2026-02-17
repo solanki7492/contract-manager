@@ -46,7 +46,7 @@ Route::middleware(['auth', 'company.context'])->group(function () {
 
         Route::resource('contacts', ContactController::class)->except(['show']);
 
-        Route::resource('users', UserController::class)->middleware('can:viewAny,App\Models\User');
+        Route::resource('users', UserController::class);
 
         Route::middleware('superadmin')->group(function () {
             Route::resource('companies', CompanyController::class)->except(['show', 'destroy']);

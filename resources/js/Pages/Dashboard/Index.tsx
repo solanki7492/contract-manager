@@ -298,16 +298,14 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders,
 
                     {/* Expiring Contracts */}
                     <Card>
-                        <CardHeader className="border-b">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <CardTitle className="text-xl">Expiring Contracts</CardTitle>
-                                    <CardDescription>Contracts expiring in the next 90 days</CardDescription>
-                                </div>
-                                <Button variant="outline" size="sm" asChild>
-                                    <Link href="/contracts">View All</Link>
-                                </Button>
+                        <CardHeader className="border-b flex items-center justify-between p-4">
+                            <div>
+                                <CardTitle className="text-xl">Expiring Contracts</CardTitle>
+                                <CardDescription>Contracts expiring in the next 90 days</CardDescription>
                             </div>
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href="/contracts">View All</Link>
+                            </Button>
                         </CardHeader>
                         <CardContent>
                             {!expiringContracts || expiringContracts.length === 0 ? (
@@ -372,16 +370,14 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders,
 
                     {/* Upcoming Reminders */}
                     <Card>
-                        <CardHeader className="border-b">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <CardTitle className="text-xl">Upcoming Reminders</CardTitle>
-                                    <CardDescription>Reminders scheduled for the next 30 days</CardDescription>
-                                </div>
-                                <Button variant="outline" size="sm" asChild>
-                                    <Link href="/reminders">View All</Link>
-                                </Button>
+                        <CardHeader className="border-b flex items-center justify-between p-4">
+                            <div>
+                                <CardTitle className="text-xl">Upcoming Reminders</CardTitle>
+                                <CardDescription>Reminders scheduled for the next 30 days</CardDescription>
                             </div>
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href="/reminders">View All</Link>
+                            </Button>
                         </CardHeader>
                         <CardContent>
                             {!upcomingReminders || upcomingReminders.length === 0 ? (

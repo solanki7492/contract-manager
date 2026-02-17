@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
+import { DatePicker } from '@/components/ui/date-picker';
+import { TimePicker } from '@/components/ui/time-picker';
 import { ArrowLeft, Bell, Calendar, Users, MessageSquare, Plus, Trash2, Loader2 } from 'lucide-react';
 
 interface Contract {
@@ -20,7 +22,7 @@ interface User {
 }
 
 interface Recipient {
-    type: 'user' | 'external';
+    recipient_type: string;
     id?: string;
     email?: string;
 }
@@ -77,7 +79,7 @@ export default function EditReminder({ reminder, contracts, users }: EditReminde
     };
 
     const addRecipient = (type: 'user' | 'external') => {
-        setData('recipients', [...data.recipients, { type, id: '', email: '' }]);
+        setData('recipients', [...data.recipients, { recipient_type: type, id: '', email: '' }]);
     };
 
     const removeRecipient = (index: number) => {
@@ -87,7 +89,7 @@ export default function EditReminder({ reminder, contracts, users }: EditReminde
 
     const updateRecipient = (index: number, field: keyof Recipient, value: string) => {
         const newRecipients = [...data.recipients];
-        if (field === 'type') {
+        if (field === 'recipient_type') {
             newRecipients[index][field] = value as 'user' | 'external';
         } else {
             newRecipients[index][field] = value;
@@ -205,13 +207,10 @@ export default function EditReminder({ reminder, contracts, users }: EditReminde
                                             <Label htmlFor="custom_date" className="text-sm font-medium text-gray-900 mb-2 block">
                                                 Custom Date <span className="text-red-500">*</span>
                                             </Label>
-                                            <input
-                                                id="custom_date"
-                                                type="date"
+                                            <DatePicker
                                                 value={data.custom_date}
-                                                onChange={(e) => setData('custom_date', e.target.value)}
-                                                className="h-10 w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                required
+                                                onChange={(date) => setData('custom_date', date)}
+                                                placeholder="Select custom date"
                                             />
                                             {errors.custom_date && <div className="mt-1.5 text-xs text-red-600">{errors.custom_date}</div>}
                                         </div>
@@ -221,13 +220,10 @@ export default function EditReminder({ reminder, contracts, users }: EditReminde
                                         <Label htmlFor="send_time" className="text-sm font-medium text-gray-900 mb-2 block">
                                             Send Time <span className="text-red-500">*</span>
                                         </Label>
-                                        <input
-                                            id="send_time"
-                                            type="time"
+                                        <TimePicker
                                             value={data.send_time}
-                                            onChange={(e) => setData('send_time', e.target.value)}
-                                            className="h-10 w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                            required
+                                            onChange={(time) => setData('send_time', time)}
+                                            placeholder="Select send time"
                                         />
                                         {errors.send_time && <div className="mt-1.5 text-xs text-red-600">{errors.send_time}</div>}
                                     </div>
@@ -301,20 +297,20 @@ export default function EditReminder({ reminder, contracts, users }: EditReminde
                                         <Label className="text-sm font-medium text-gray-900 mb-3 block">
                                             Recipients <span className="text-red-500">*</span>
                                         </Label>
-                                        
+
                                         {data.recipients.length > 0 && (
                                             <div className="space-y-3 mb-4">
                                                 {data.recipients.map((recipient, index) => (
                                                     <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-md border">
                                                         <select
-                                                            value={recipient.type}
-                                                            onChange={(e) => updateRecipient(index, 'type', e.target.value as 'user' | 'external')}
+                                                            value={recipient.recipient_type}
+                                                            onChange={(e) => updateRecipient(index, 'recipient_type', e.target.value as 'user' | 'external')}
                                                             className="flex-1 h-9 px-3 py-1 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                         >
                                                             <option value="user">Internal User</option>
                                                             <option value="external">External Email</option>
                                                         </select>
-                                                        {recipient.type === 'user' ? (
+                                                        {recipient.recipient_type === 'user' ? (
                                                             <select
                                                                 value={recipient.id || ''}
                                                                 onChange={(e) => updateRecipient(index, 'id', e.target.value)}
@@ -347,7 +343,7 @@ export default function EditReminder({ reminder, contracts, users }: EditReminde
                                                 ))}
                                             </div>
                                         )}
-                                        
+
                                         <div className="flex gap-2">
                                             <Button
                                                 type="button"

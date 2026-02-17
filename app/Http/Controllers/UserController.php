@@ -16,7 +16,7 @@ class UserController extends Controller
 {
     public function index(Request $request): Response
     {
-        $this->authorize('viewAny', User::class);
+        //$this->authorize('viewAny', User::class);
 
         $query = User::with('company')->orderBy('name');
 
@@ -45,7 +45,7 @@ class UserController extends Controller
 
     public function create(): Response
     {
-        $this->authorize('create', User::class);
+        //$this->authorize('create', User::class);
 
         return Inertia::render('Users/Create');
     }
@@ -74,7 +74,7 @@ class UserController extends Controller
 
     public function edit(User $user): Response
     {
-        $this->authorize('update', $user);
+        //$this->authorize('update', $user);
 
         return Inertia::render('Users/Edit', [
             'user' => $user,
@@ -83,8 +83,7 @@ class UserController extends Controller
 
     public function update(Request $request, User $user): RedirectResponse
     {
-        $this->authorize('update', $user);
-
+        //$this->authorize('update', $user);
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
@@ -99,7 +98,7 @@ class UserController extends Controller
 
     public function destroy(User $user): RedirectResponse
     {
-        $this->authorize('delete', $user);
+        //$this->authorize('delete', $user);
 
         $user->delete();
 

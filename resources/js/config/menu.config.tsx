@@ -3,11 +3,11 @@ import {
   Bell,
   FileText,
   LayoutGrid,
-  Mail,
   Settings,
   Users,
   UserPlus,
   Plus,
+  UserCog
 } from 'lucide-react';
 import { type MenuConfig } from './types';
 
@@ -64,51 +64,21 @@ export const MENU_COMPANY: MenuConfig = [
     title: 'Contracts',
     path: '/contracts',
     icon: FileText,
-    children: [
-      {
-        title: 'All Contracts',
-        path: '/contracts',
-      },
-      {
-        title: 'Create',
-        path: '/contracts/create',
-        icon: Plus,
-      },
-      {
-        title: 'Edit',
-        path: '/contracts/:id/edit',
-      },
-    ],
   },
   {
     title: 'Reminders',
     path: '/reminders',
     icon: Bell,
-    children: [
-      {
-        title: 'All Reminders',
-        path: '/reminders',
-      },
-      {
-        title: 'Create',
-        path: '/reminders/create',
-        icon: Plus,
-      },
-      {
-        title: 'Edit',
-        path: '/reminders/:id/edit',
-      },
-    ],
   },
   {
     title: 'Contacts',
     path: '/contacts',
-    icon: Mail,
+    icon: Users,
   },
   {
     title: 'Users',
     path: '/users',
-    icon: Users,
+    icon: UserCog,
   },
   { heading: 'Settings' },
   {

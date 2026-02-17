@@ -86,7 +86,7 @@ class ReminderController extends Controller
 
     public function show(Reminder $reminder): Response
     {
-        $this->authorize('view', $reminder);
+        //$this->authorize('view', $reminder);
 
         $reminder->load(['contract', 'recipients.user', 'creator', 'handler']);
 
@@ -97,7 +97,7 @@ class ReminderController extends Controller
 
     public function edit(Reminder $reminder): Response
     {
-        $this->authorize('update', $reminder);
+        //$this->authorize('update', $reminder);
 
         $reminder->load(['contract', 'recipients.user']);
 

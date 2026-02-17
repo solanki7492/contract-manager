@@ -1,6 +1,6 @@
 import MainLayout from '../../Layouts/MainLayout';
 import { Link } from '@inertiajs/react';
-import { Plus } from 'lucide-react';
+import { Plus, Edit, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -43,7 +43,7 @@ export default function RemindersIndex({ reminders }: PageProps) {
             <Container>
                 <div className="space-y-6">
                     <div className="flex justify-between items-center">
-                        <h1 className="text-3xl font-bold text-gray-900">Reminders</h1>
+                        <h1 className="text-3xl font-bold text-mono">Reminders</h1>
                         <Button asChild>
                             <Link href="/reminders/create">
                                 <Plus className="w-5 h-5" />
@@ -105,7 +105,14 @@ export default function RemindersIndex({ reminders }: PageProps) {
                                                         <div className="flex gap-2">
                                                             <Button variant="ghost" size="sm" asChild>
                                                                 <Link href={`/reminders/${reminder.id}`}>
+                                                                    <Eye className="w-4 h-4" />
                                                                     View
+                                                                </Link>
+                                                            </Button>
+                                                            <Button variant="ghost" size="sm" asChild>
+                                                                <Link href={`/reminders/${reminder.id}/edit`}>
+                                                                    <Edit className="w-4 h-4" />
+                                                                    Edit
                                                                 </Link>
                                                             </Button>
                                                             {reminder.status === 'sent' && (

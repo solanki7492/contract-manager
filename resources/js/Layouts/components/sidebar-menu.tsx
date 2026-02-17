@@ -33,12 +33,21 @@ export function SidebarMenu() {
   // Get user role and select appropriate menu
   const userRole = page.props.auth?.user?.role;
   const isSuperAdmin = userRole === 'superadmin';
+  const isCompanyAdmin = userRole === 'company_admin';
   const menuItems = isSuperAdmin ? MENU_SUPERADMIN : MENU_COMPANY;
+
+  // Filter menu items based on user role
+  const filteredMenuItems = menuItems.filter((item) => {
+    // If the item is the Users menu and user is not admin, hide it
+    if (item.path === '/users' && !isSuperAdmin && !isCompanyAdmin) {
+      return false;
+    }
+    return true;
+  });
 
   // Memoize matchPath to prevent unnecessary re-renders
   const matchPath = useCallback(
-    (path: string): boolean =>
-      path === pathname || (path.length > 1 && pathname.startsWith(path)),
+    (path: string): boolean => pathname === path,
     [pathname],
   );
 
@@ -233,7 +242,7 @@ export function SidebarMenu() {
         collapsible
         classNames={classNames}
       >
-        {buildMenu(menuItems)}
+        {buildMenu(filteredMenuItems)}
       </AccordionMenu>
     </div>
   );
