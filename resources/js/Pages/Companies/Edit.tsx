@@ -5,7 +5,8 @@ import MainLayout from '@/Layouts/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Container } from '@/components/common/container';
 import { Checkbox } from '@/components/ui/checkbox';
 
 interface Company {
@@ -52,26 +53,36 @@ export default function Edit({ company }: PageProps) {
 
     return (
         <MainLayout>
-            <div className="max-w-3xl mx-auto space-y-6">
-                {/* Header */}
-                <div>
-                    <Button variant="ghost" asChild className="mb-4">
-                        <Link href="/companies">
-                            <ArrowLeft className="w-4 h-4" />
-                            Back to Companies
-                        </Link>
-                    </Button>
-                    <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                        <Building2 className="w-7 h-7 text-blue-600" />
-                        Edit Company
-                    </h1>
-                    <p className="text-sm text-gray-600 mt-1">Update company information</p>
-                </div>
+            <Container>
+                <div className="space-y-6">
+                    {/* Page Header */}
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div className="flex flex-col gap-1">
+                            <div className="flex items-center gap-2.5 font-semibold text-lg text-gray-900">
+                                <Building2 className="size-5 text-gray-700" />
+                                Edit Company
+                            </div>
+                            <p className="text-sm text-gray-600">
+                                Update company information
+                            </p>
+                        </div>
+                        <div className="flex items-center gap-2.5">
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href="/companies">
+                                    <ArrowLeft className="size-4" />
+                                    Back to Companies
+                                </Link>
+                            </Button>
+                        </div>
+                    </div>
 
-                {/* Form */}
-                <Card>
-                    <CardContent className="p-6">
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Company Form */}
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <Card>
+                            <CardHeader className="border-b border-gray-200">
+                                <CardTitle className="text-base font-semibold">Company Information</CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-7.5">
                             <div className="grid grid-cols-1 gap-4">
                                 <div>
                                     <Label htmlFor="name">Company Name *</Label>
