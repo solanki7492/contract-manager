@@ -1,6 +1,6 @@
 import MainLayout from '../../Layouts/MainLayout';
 import { Link, router } from '@inertiajs/react';
-import { ArrowLeft, Users, Mail, Phone, Building2, FileText, Edit } from 'lucide-react';
+import { ArrowLeft, Users, Mail, Phone, Building2, Edit, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
@@ -8,10 +8,9 @@ import { Separator } from '@/components/ui/separator';
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 import { Head } from '@inertiajs/react';
 
-interface User {
+interface Company {
     id: number;
     name: string;
-    email: string;
 }
 
 interface Contact {
@@ -19,9 +18,8 @@ interface Contact {
     name: string;
     email: string;
     phone: string | null;
-    organization: string | null;
-    notes: string | null;
-    creator?: User;
+    company?: Company;
+    last_login_at?: string;
     created_at: string;
     updated_at: string;
 }
@@ -65,8 +63,7 @@ export default function ShowContact({ contact }: ShowContactProps) {
                             <div>
                                 <CardTitle className="text-2xl font-bold">{contact.name}</CardTitle>
                                 <CardDescription className="mt-1">
-                                    Created {new Date(contact.created_at).toLocaleDateString()}
-                                    {contact.creator && ` by ${contact.creator.name}`}
+                                    User since {new Date(contact.created_at).toLocaleDateString()}
                                 </CardDescription>
                             </div>
                         </CardHeader>
@@ -103,32 +100,24 @@ export default function ShowContact({ contact }: ShowContactProps) {
                                 <div>
                                     <h3 className="text-sm font-medium text-gray-500 mb-1 flex items-center gap-2">
                                         <Building2 className="size-4" />
-                                        Organization
+                                        Company
                                     </h3>
                                     <p className="text-base text-gray-900">
-                                        {contact.organization || 'N/A'}
+                                        {contact.company?.name || 'N/A'}
                                     </p>
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-medium text-gray-500 mb-1">Last Updated</h3>
+                                    <h3 className="text-sm font-medium text-gray-500 mb-1 flex items-center gap-2">
+                                        <Calendar className="size-4" />
+                                        Last Login
+                                    </h3>
                                     <p className="text-base text-gray-900">
-                                        {new Date(contact.updated_at).toLocaleDateString()}
+                                        {contact.last_login_at
+                                            ? new Date(contact.last_login_at).toLocaleDateString()
+                                            : 'Never'}
                                     </p>
                                 </div>
                             </div>
-
-                            {contact.notes && (
-                                <>
-                                    <Separator className="my-6" />
-                                    <div>
-                                        <h3 className="text-sm font-medium text-gray-500 mb-2 flex items-center gap-2">
-                                            <FileText className="size-4" />
-                                            Notes
-                                        </h3>
-                                        <p className="text-base text-gray-900 whitespace-pre-wrap">{contact.notes}</p>
-                                    </div>
-                                </>
-                            )}
 
                             <Separator className="my-6" />
                             <div className="flex items-center gap-2">

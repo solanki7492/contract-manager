@@ -38,6 +38,10 @@ class ContractController extends Controller
             $query->where('contract_type_id', $request->type);
         }
 
+        if ($request->filled('end_date')) {
+            $query->whereBetween('end_date', [now()->toDateString(), $request->end_date]);
+        }
+
         if ($request->filled('end_date_from')) {
             $query->where('end_date', '>=', $request->end_date_from);
         }

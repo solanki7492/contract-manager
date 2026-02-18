@@ -24,7 +24,7 @@ export const MENU_SUPERADMIN: MenuConfig = [
     icon: Building,
   },
   {
-    title: 'Company Users',
+    title: 'Users',
     path: '/users',
     icon: UserPlus,
   },

@@ -1,7 +1,7 @@
 import MainLayout from '../../Layouts/MainLayout';
 import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
-import { Plus, Users, Mail, Phone, Building2, Eye, Edit } from 'lucide-react';
+import { Plus, Users, Mail, Eye, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,13 +10,18 @@ import { Container } from '@/components/common/container';
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 import { Head } from '@inertiajs/react';
 
+interface Company {
+    id: number;
+    name: string;
+}
+
 interface Contact {
     id: number;
     name: string;
     email: string;
-    phone: string | null;
-    organization: string | null;
-    notes: string | null;
+    company?: Company;
+    last_login_at?: string;
+    created_at: string;
 }
 
 interface PageProps {
@@ -71,7 +76,7 @@ export default function ContactsIndex({ contacts, filters }: PageProps) {
                                 <div className="md:col-span-2">
                                     <Input
                                         type="text"
-                                        placeholder="Search by name, email, or organization..."
+                                        placeholder="Search by name or email..."
                                         value={search}
                                         onChange={(e) => setSearch(e.target.value)}
                                         onKeyPress={(e) => e.key === 'Enter' && handleFilter()}
@@ -105,8 +110,8 @@ export default function ContactsIndex({ contacts, filters }: PageProps) {
                                         <TableRow>
                                             <TableHead>Name</TableHead>
                                             <TableHead>Email</TableHead>
-                                            <TableHead>Phone</TableHead>
-                                            <TableHead>Organization</TableHead>
+                                            <TableHead>Company</TableHead>
+                                            <TableHead>Last Login</TableHead>
                                             <TableHead className="text-right">Actions</TableHead>
                                         </TableRow>
                                     </TableHeader>
@@ -136,26 +141,14 @@ export default function ContactsIndex({ contacts, filters }: PageProps) {
                                                         </div>
                                                     </TableCell>
                                                     <TableCell>
-                                                        {contact.phone ? (
-                                                            <div className="flex items-center gap-2 text-gray-900">
-                                                                <Phone className="size-4 text-gray-400" />
-                                                                <a href={`tel:${contact.phone}`} className="hover:text-blue-600 hover:underline">
-                                                                    {contact.phone}
-                                                                </a>
-                                                            </div>
-                                                        ) : (
-                                                            <span className="text-gray-400">—</span>
-                                                        )}
+                                                        <div className="text-gray-900">{contact.company?.name || 'N/A'}</div>
                                                     </TableCell>
                                                     <TableCell>
-                                                        {contact.organization ? (
-                                                            <div className="flex items-center gap-2 text-gray-900">
-                                                                <Building2 className="size-4 text-gray-400" />
-                                                                <span>{contact.organization}</span>
-                                                            </div>
-                                                        ) : (
-                                                            <span className="text-gray-400">—</span>
-                                                        )}
+                                                        <div className="text-gray-900">
+                                                            {contact.last_login_at
+                                                                ? new Date(contact.last_login_at).toLocaleDateString()
+                                                                : 'Never'}
+                                                        </div>
                                                     </TableCell>
                                                     <TableCell>
                                                         <div className="flex gap-2 justify-end">

@@ -1,5 +1,5 @@
 import MainLayout from '../../Layouts/MainLayout';
-import { Link, router } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { Plus, Users as UsersIcon, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -37,10 +37,22 @@ interface PageProps {
     filters: {
         search?: string;
         role?: string;
+        company_id?: string;
     };
+    auth: {
+        user: {
+            id: number;
+            name: string;
+            email: string;
+            role: string;
+            company_id: number;
+        };
+    };
+    [key: string]: unknown;
 }
 
-export default function UsersIndex({ users, filters }: PageProps) {
+export default function UsersIndex() {
+    const { users, filters, auth } = usePage<PageProps>().props;
     const [search, setSearch] = useState(filters.search || '');
     const [role, setRole] = useState(filters.role || '');
 
@@ -204,12 +216,14 @@ export default function UsersIndex({ users, filters }: PageProps) {
                                                                     Edit
                                                                 </Link>
                                                             </Button>
-                                                            <DeleteConfirmDialog
-                                                                title="Are you sure?"
-                                                                description="This action cannot be undone. This will permanently delete this user."
-                                                                onConfirm={() => handleDeleteUser(user.id)}
-                                                                variant="icon"
-                                                            />
+                                                            {auth.user.id !== user.id && (
+                                                                <DeleteConfirmDialog
+                                                                    title="Are you sure?"
+                                                                    description="This action cannot be undone. This will permanently delete this user."
+                                                                    onConfirm={() => handleDeleteUser(user.id)}
+                                                                    variant="icon"
+                                                                />
+                                                            )}
                                                         </div>
                                                     </TableCell>
                                                 </TableRow>

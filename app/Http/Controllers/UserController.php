@@ -35,11 +35,15 @@ class UserController extends Controller
             $query->where('role', $request->role);
         }
 
+        if ($request->filled('company_id')) {
+            $query->where('company_id', $request->company_id);
+        }
+
         $users = $query->paginate(15)->withQueryString();
 
         return Inertia::render('Users/Index', [
             'users' => $users,
-            'filters' => $request->only(['search', 'role']),
+            'filters' => $request->only(['search', 'role', 'company_id']),
         ]);
     }
 

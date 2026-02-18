@@ -127,10 +127,13 @@ export default function Index() {
                                                         )}
                                                     </TableCell>
                                                     <TableCell>
-                                                        <div className="flex items-center gap-1 text-sm text-gray-700">
+                                                        <Link
+                                                            href={`/users?company_id=${company.id}`}
+                                                            className="flex items-center gap-1 text-sm text-primary hover:text-primary-dark hover:underline cursor-pointer"
+                                                        >
                                                             <Users className="w-4 h-4" />
                                                             {company.users_count}
-                                                        </div>
+                                                        </Link>
                                                     </TableCell>
                                                     <TableCell>
                                                         <Badge variant={company.is_active ? 'success' : 'destructive'}>

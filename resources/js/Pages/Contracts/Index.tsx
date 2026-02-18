@@ -37,6 +37,7 @@ interface PageProps {
         search?: string;
         status?: string;
         type?: string;
+        end_date?: string;
     };
 }
 
@@ -44,15 +45,17 @@ export default function ContractsIndex({ contracts, contractTypes, filters }: Pa
     const [search, setSearch] = useState(filters.search || '');
     const [status, setStatus] = useState(filters.status || '');
     const [type, setType] = useState(filters.type || '');
+    const [endDate, setEndDate] = useState(filters.end_date || '');
 
     const handleFilter = () => {
-        router.get('/contracts', { search, status, type }, { preserveState: true });
+        router.get('/contracts', { search, status, type, end_date: endDate }, { preserveState: true });
     };
 
     const handleReset = () => {
         setSearch('');
         setStatus('');
         setType('');
+        setEndDate('');
         router.get('/contracts');
     };
 
@@ -78,55 +81,63 @@ export default function ContractsIndex({ contracts, contractTypes, filters }: Pa
 
                     {/* Filters */}
                     <Card>
-                        <CardContent className="p-6">
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                <div>
-                                    <Input
-                                        type="text"
-                                        placeholder="Search contracts..."
-                                        value={search}
-                                        onChange={(e) => setSearch(e.target.value)}
-                                    />
-                                </div>
-                                <div>
-                                    <select
-                                        value={status}
-                                        onChange={(e) => setStatus(e.target.value)}
-                                        className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                                    >
-                                        <option value="">All Statuses</option>
-                                        <option value="active">Active</option>
-                                        <option value="expiring">Expiring</option>
-                                        <option value="expired">Expired</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <select
-                                        value={type}
-                                        onChange={(e) => setType(e.target.value)}
-                                        className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                                    >
-                                        <option value="">All Types</option>
-                                        {contractTypes.map((ct) => (
-                                            <option key={ct.id} value={ct.id}>{ct.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div className="flex space-x-2">
-                                    <Button
-                                        onClick={handleFilter}
-                                        className="flex-1"
-                                    >
-                                        Filter
-                                    </Button>
-                                    <Button
-                                        onClick={handleReset}
-                                        variant="secondary"
-                                        className="flex-1"
-                                    >
-                                        Reset
-                                    </Button>
-                                </div>
+                        <CardContent className="p-6 grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+                            <div>
+                                <Input
+                                    type="text"
+                                    placeholder="Search contracts..."
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    className="h-10 w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                />
+                            </div>
+                            <div>
+                                <select
+                                    value={status}
+                                    onChange={(e) => setStatus(e.target.value)}
+                                    className="h-10 w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                >
+                                    <option value="">All Statuses</option>
+                                    <option value="active">Active</option>
+                                    <option value="expiring">Expiring</option>
+                                    <option value="expired">Expired</option>
+                                </select>
+                            </div>
+                            <div>
+                                <select
+                                    value={type}
+                                    onChange={(e) => setType(e.target.value)}
+                                    className="h-10 w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                >
+                                    <option value="">All Types</option>
+                                    {contractTypes.map((ct) => (
+                                        <option key={ct.id} value={ct.id}>{ct.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <Input
+                                    id='end_date'
+                                    type='date'
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    className='h-10 w-full px-3 py-2 pr-10 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                                />
+                            </div>
+                            <div className="flex space-x-2">
+                                <Button
+                                    onClick={handleFilter}
+                                    className="flex-1"
+                                >
+                                    Filter
+                                </Button>
+                                <Button
+                                    onClick={handleReset}
+                                    variant="secondary"
+                                    className="flex-1"
+                                >
+                                    Reset
+                                </Button>
                             </div>
                         </CardContent>
                     </Card>

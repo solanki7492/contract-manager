@@ -4,9 +4,9 @@ import { FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
-import { ArrowLeft, Users, Mail, Phone, Building2, FileText } from 'lucide-react';
+import { ArrowLeft, Users, Mail, Phone } from 'lucide-react';
 import { Head } from '@inertiajs/react';
 
 export default function CreateContact() {
@@ -14,8 +14,6 @@ export default function CreateContact() {
         name: '',
         email: '',
         phone: '',
-        organization: '',
-        notes: '',
     });
 
     const submit = (e: FormEvent) => {
@@ -38,7 +36,7 @@ export default function CreateContact() {
                                 Create New Contact
                             </div>
                             <p className="text-sm text-gray-600">
-                                Add a new contact to your address book
+                                Add a new contact user to your team
                             </p>
                         </div>
                         <div className="flex items-center gap-2.5">
@@ -55,7 +53,10 @@ export default function CreateContact() {
                     <form onSubmit={submit} className="space-y-5">
                         <Card>
                             <CardHeader className="border-b border-gray-200">
-                                <CardTitle className="text-base font-semibold">Basic Information</CardTitle>
+                                <CardTitle className="text-base font-semibold">User Information</CardTitle>
+                                <CardDescription className="text-sm">
+                                    A temporary password will be generated and sent to the user's email
+                                </CardDescription>
                             </CardHeader>
                             <CardContent className="p-7.5">
                                 <div className="space-y-5">
@@ -123,55 +124,6 @@ export default function CreateContact() {
                                             </div>
                                             {errors.phone && <div className="mt-1.5 text-xs text-red-600">{errors.phone}</div>}
                                         </div>
-                                    </div>
-
-                                    {/* Organization */}
-                                    <div className="w-full">
-                                        <Label htmlFor="organization" className="text-sm font-medium text-gray-900 mb-2 block">
-                                            Organization
-                                        </Label>
-                                        <div className="relative">
-                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                <Building2 className="size-4 text-gray-400" />
-                                            </div>
-                                            <Input
-                                                id="organization"
-                                                type="text"
-                                                value={data.organization}
-                                                onChange={(e) => setData('organization', e.target.value)}
-                                                placeholder="Enter organization name"
-                                                className="h-10 pl-10"
-                                            />
-                                        </div>
-                                        {errors.organization && <div className="mt-1.5 text-xs text-red-600">{errors.organization}</div>}
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Additional Information */}
-                        <Card>
-                            <CardHeader className="border-b border-gray-200">
-                                <CardTitle className="text-base font-semibold flex items-center gap-2">
-                                    <FileText className="size-4" />
-                                    Additional Information
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="p-7.5">
-                                <div className="space-y-5">
-                                    <div>
-                                        <Label htmlFor="notes" className="text-sm font-medium text-gray-900 mb-2 block">
-                                            Notes
-                                        </Label>
-                                        <textarea
-                                            id="notes"
-                                            value={data.notes}
-                                            onChange={(e) => setData('notes', e.target.value)}
-                                            rows={4}
-                                            placeholder="Enter any additional notes about this contact..."
-                                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                                        />
-                                        {errors.notes && <div className="mt-1.5 text-xs text-red-600">{errors.notes}</div>}
                                     </div>
                                 </div>
                             </CardContent>
