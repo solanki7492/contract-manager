@@ -62,6 +62,7 @@ class ContractReminderNotification extends Notification implements ShouldQueue
             'contract_counterparty' => $this->contract->counterparty,
             'end_date' => $this->contract->end_date->format('Y-m-d'),
             'termination_deadline' => $this->contract->termination_deadline?->format('Y-m-d'),
+            'message' => "Reminder for contract '{$this->contract->title}' ending on {$this->contract->end_date->format('F d, Y')}.",
             'notes' => $this->reminder->notes,
             'trigger_type' => $this->reminder->trigger_type->value,
         ];

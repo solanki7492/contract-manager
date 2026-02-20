@@ -85,10 +85,10 @@ export function NotificationsSheet({ trigger, onUnreadCountChange }: Notificatio
       <SheetTrigger asChild>{trigger}</SheetTrigger>
       <SheetContent className="p-0 gap-0 sm:w-[500px] sm:max-w-none inset-5 start-auto h-auto rounded-lg p-0 sm:max-w-none [&_[data-slot=sheet-close]]:top-4.5 [&_[data-slot=sheet-close]]:end-5">
         <SheetHeader className="mb-0">
-          <SheetTitle className="p-3 flex items-center justify-between">
+          <SheetTitle className="p-3 flex items-center">
             <span>Notifications</span>
             {unreadCount > 0 && (
-              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary text-primary-foreground">
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary text-primary-foreground ml-2">
                 {unreadCount} new
               </span>
             )}

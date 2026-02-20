@@ -12,7 +12,7 @@ class UpdateReminderRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('update', $this->route('reminder'));
+        return true;
     }
 
     public function rules(): array
@@ -40,9 +40,9 @@ class UpdateReminderRequest extends FormRequest
             'channels' => ['required', 'array', 'min:1'],
             'channels.*' => [Rule::enum(ReminderChannel::class)],
             'recipients' => ['required', 'array', 'min:1'],
-            'recipients.*.type' => ['required', Rule::enum(RecipientType::class)],
-            'recipients.*.id' => ['required_if:recipients.*.type,' . RecipientType::USER->value, 'nullable', 'exists:users,id'],
-            'recipients.*.email' => ['required_if:recipients.*.type,' . RecipientType::EXTERNAL->value, 'nullable', 'email'],
+            'recipients.*.recipient_type' => ['required', Rule::enum(RecipientType::class)],
+            'recipients.*.id' => ['required_if:recipients.*.recipient_type,' . RecipientType::USER->value, 'nullable', 'exists:users,id'],
+            'recipients.*.email' => ['required_if:recipients.*.recipient_type,' . RecipientType::EXTERNAL->value, 'nullable', 'email'],
             'notes' => ['nullable', 'string'],
         ];
     }

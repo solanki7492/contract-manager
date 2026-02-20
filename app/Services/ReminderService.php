@@ -55,9 +55,9 @@ class ReminderService
     {
         foreach ($recipients as $recipient) {
             $reminder->recipients()->create([
-                'recipient_type' => $recipient['type'],
-                'user_id' => $recipient['type'] === RecipientType::USER->value ? $recipient['id'] : null,
-                'email' => $recipient['type'] === RecipientType::EXTERNAL->value ? $recipient['email'] : null,
+                'recipient_type' => $recipient['recipient_type'],
+                'user_id' => $recipient['recipient_type'] === RecipientType::USER->value ? $recipient['id'] : null,
+                'email' => $recipient['recipient_type'] === RecipientType::EXTERNAL->value ? $recipient['email'] : null,
             ]);
         }
     }
