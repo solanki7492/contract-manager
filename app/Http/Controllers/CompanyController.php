@@ -43,7 +43,7 @@ class CompanyController extends Controller
     public function store(StoreCompanyRequest $request): RedirectResponse
     {
         $result = $this->companyService->createCompanyWithUser(
-            $request->only(['name', 'email', 'phone', 'address', 'timezone']),
+            $request->only(['name', 'phone', 'timezone']),
             ['name' => $request->user_name, 'email' => $request->user_email]
         );
 
@@ -67,9 +67,7 @@ class CompanyController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
-            'address' => ['nullable', 'string'],
             'timezone' => ['required', 'string', 'timezone'],
             'is_active' => ['required', 'boolean'],
         ]);

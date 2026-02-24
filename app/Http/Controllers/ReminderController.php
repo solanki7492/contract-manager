@@ -40,6 +40,15 @@ class ReminderController extends Controller
             $query->where('trigger_datetime', '<=', $request->date_to);
         }
 
+        // Filter by upcoming days (from dashboard)
+        if ($request->filled('upcoming_days')) {
+            $days = (int) $request->upcoming_days;
+            $query->whereBetween('trigger_datetime', [
+                now(),
+                now()->addDays($days)
+            ]);
+        }
+
         $reminders = $query->paginate(15)->withQueryString();
 
         $contracts = Contract::select('id', 'title')
@@ -49,7 +58,7 @@ class ReminderController extends Controller
         return Inertia::render('Reminders/Index', [
             'reminders' => $reminders,
             'contracts' => $contracts,
-            'filters' => $request->only(['status', 'contract_id', 'date_from', 'date_to']),
+            'filters' => $request->only(['status', 'contract_id', 'date_from', 'date_to', 'upcoming_days']),
         ]);
     }
 

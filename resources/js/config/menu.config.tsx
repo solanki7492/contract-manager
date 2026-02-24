@@ -2,6 +2,7 @@ import {
   Building,
   Bell,
   FileText,
+  FileType,
   LayoutGrid,
   Settings,
   Users,
@@ -69,5 +70,10 @@ export const MENU_COMPANY: MenuConfig = [
     title: 'Profile',
     path: '/profile',
     icon: Settings,
+  },
+  {
+    title: 'Contract Types',
+    path: '/settings/contract-types',
+    icon: FileType,
   },
 ];

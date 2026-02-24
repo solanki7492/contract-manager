@@ -1,10 +1,9 @@
 import { usePage } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { User, Lock, FileType, Settings } from 'lucide-react';
+import { User, Lock, Settings } from 'lucide-react';
 import EditProfileForm from '@/components/profile/EditProfileForm';
 import ChangePasswordForm from '@/components/profile/ChangePasswordForm';
-import ContractTypesManagement from '@/components/profile/ContractTypesManagement';
 import { Container } from '@/components/common/container';
 import { Head } from '@inertiajs/react';
 
@@ -15,22 +14,13 @@ interface User {
     role: string;
 }
 
-interface ContractType {
-    id: number;
-    name: string;
-    color: string;
-    is_system: boolean;
-}
-
 interface PageProps {
     user: User;
-    contractTypes?: ContractType[];
     [key: string]: any;
 }
 
 export default function Show() {
-    const { user, contractTypes } = usePage<PageProps>().props;
-    const isCompanyAdmin = user.role === 'company_admin' || user.role === 'superadmin';
+    const { user } = usePage<PageProps>().props;
 
     return (
         <MainLayout>
@@ -52,7 +42,7 @@ export default function Show() {
                         </div>
 
                         <Tabs defaultValue="profile" className="space-y-6">
-                            <TabsList className="grid w-full max-w-md" style={{ gridTemplateColumns: isCompanyAdmin ? 'repeat(3, 1fr)' : 'repeat(2, 1fr)' }}>
+                            <TabsList className="grid w-full max-w-md grid-cols-2">
                                 <TabsTrigger value="profile" className="flex items-center gap-2">
                                     <User className="h-4 w-4" />
                                     Profile
@@ -61,12 +51,6 @@ export default function Show() {
                                     <Lock className="h-4 w-4" />
                                     Password
                                 </TabsTrigger>
-                                {isCompanyAdmin && (
-                                    <TabsTrigger value="contract-types" className="flex items-center gap-2">
-                                        <FileType className="h-4 w-4" />
-                                        Contract Types
-                                    </TabsTrigger>
-                                )}
                             </TabsList>
 
                             <TabsContent value="profile" className="space-y-6">
@@ -76,12 +60,6 @@ export default function Show() {
                             <TabsContent value="password" className="space-y-6">
                                 <ChangePasswordForm />
                             </TabsContent>
-
-                            {isCompanyAdmin && contractTypes && (
-                                <TabsContent value="contract-types" className="space-y-6">
-                                    <ContractTypesManagement contractTypes={contractTypes} />
-                                </TabsContent>
-                            )}
                         </Tabs>
                     </div>
                 </div>

@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
 import { ArrowLeft, FileText, Calendar, Clock, FileUp, Loader2 } from 'lucide-react';
 import { Head } from '@inertiajs/react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface ContractType {
     id: number;
@@ -211,40 +212,79 @@ export default function EditContract({ contract, contractTypes }: EditContractPr
                                     Termination Details
                                 </CardTitle>
                             </CardHeader>
+
                             <CardContent className="p-7.5">
-                                <div className="space-y-5">
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                                <Tabs
+                                    defaultValue={data.termination_deadline_date ? "date" : "days"}
+                                    onValueChange={(value) => {
+                                        if (value === "days") {
+                                            setData('termination_deadline_date', '');
+                                        } else {
+                                            setData('termination_notice_days', '');
+                                        }
+                                    }}
+                                >
+                                    {/* Tabs Header */}
+                                    <TabsList className="mb-6 max-w-max">
+                                        <TabsTrigger value="days">Notice Period (Days)</TabsTrigger>
+                                        <TabsTrigger value="date">Deadline Date</TabsTrigger>
+                                    </TabsList>
+                                    {/* Days Tab */}
+                                    <TabsContent value="days">
                                         <div>
-                                            <Label htmlFor="termination_notice_days" className="text-sm font-medium text-gray-900 mb-2 block">
+                                            <Label
+                                                htmlFor="termination_notice_days"
+                                                className="text-sm font-medium text-gray-900 mb-2 block"
+                                            >
                                                 Termination Notice Period (days)
                                             </Label>
+
                                             <Input
                                                 id="termination_notice_days"
                                                 type="number"
                                                 value={data.termination_notice_days}
-                                                onChange={(e) => setData('termination_notice_days', e.target.value)}
+                                                onChange={(e) =>
+                                                    setData('termination_notice_days', e.target.value)
+                                                }
                                                 min="1"
                                                 placeholder="Enter days"
                                                 className="h-10"
                                             />
-                                            {errors.termination_notice_days && <div className="mt-1.5 text-xs text-red-600">{errors.termination_notice_days}</div>}
-                                        </div>
 
+                                            {errors.termination_notice_days && (
+                                                <div className="mt-1.5 text-xs text-red-600">
+                                                    {errors.termination_notice_days}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </TabsContent>
+
+                                    {/* Date Tab */}
+                                    <TabsContent value="date">
                                         <div>
-                                            <Label htmlFor="termination_deadline_date" className="text-sm font-medium text-gray-900 mb-2 block">
-                                                Or Termination Deadline Date
+                                            <Label
+                                                htmlFor="termination_deadline_date"
+                                                className="text-sm font-medium text-gray-900 mb-2 block"
+                                            >
+                                                Termination Deadline Date
                                             </Label>
                                             <input
                                                 id="termination_deadline_date"
                                                 type="date"
                                                 value={data.termination_deadline_date}
-                                                onChange={(e) => setData('termination_deadline_date', e.target.value)}
+                                                onChange={(e) =>
+                                                    setData('termination_deadline_date', e.target.value)
+                                                }
                                                 className="h-10 w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                             />
-                                            {errors.termination_deadline_date && <div className="mt-1.5 text-xs text-red-600">{errors.termination_deadline_date}</div>}
+                                            {errors.termination_deadline_date && (
+                                                <div className="mt-1.5 text-xs text-red-600">
+                                                    {errors.termination_deadline_date}
+                                                </div>
+                                            )}
                                         </div>
-                                    </div>
-                                </div>
+                                    </TabsContent>
+                                </Tabs>
                             </CardContent>
                         </Card>
 
@@ -319,10 +359,10 @@ export default function EditContract({ contract, contractTypes }: EditContractPr
                                 {processing ? (
                                     <>
                                         <Loader2 className="size-4 animate-spin" />
-                                        Updating...
+                                        Saving...
                                     </>
                                 ) : (
-                                    'Update Contract'
+                                    'Save'
                                 )}
                             </Button>
                             <Button type="button" variant="outline" size="sm" asChild>

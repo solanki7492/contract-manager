@@ -50,6 +50,15 @@ class ContractController extends Controller
             $query->where('end_date', '<=', $request->end_date_to);
         }
 
+        // Filter by expiring days (from dashboard)
+        if ($request->filled('expiring_days')) {
+            $days = (int) $request->expiring_days;
+            $query->whereBetween('end_date', [
+                now()->toDateString(),
+                now()->addDays($days)->toDateString()
+            ]);
+        }
+
         $contracts = $query->paginate(15)->withQueryString();
 
         $contractTypes = ContractType::where('company_id', auth()->user()->company_id)
@@ -59,14 +68,14 @@ class ContractController extends Controller
         return Inertia::render('Contracts/Index', [
             'contracts' => $contracts,
             'contractTypes' => $contractTypes,
-            'filters' => $request->only(['search', 'status', 'type', 'end_date_from', 'end_date_to']),
+            'filters' => $request->only(['search', 'status', 'type', 'end_date_from', 'end_date_to', 'expiring_days']),
         ]);
     }
 
     public function create(): Response
     {
         $contractTypes = ContractType::where('company_id', auth()->user()->company_id)
-            ->orWhere('is_system', true)
+            ->orderBy('name')
             ->get();
 
         return Inertia::render('Contracts/Create', [
@@ -106,7 +115,7 @@ class ContractController extends Controller
         $contract->load(['contractType']);
 
         $contractTypes = ContractType::where('company_id', auth()->user()->company_id)
-            ->orWhere('is_system', true)
+            ->orderBy('name')
             ->get();
 
         return Inertia::render('Contracts/Edit', [

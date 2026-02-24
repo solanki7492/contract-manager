@@ -15,9 +15,7 @@ class StoreCompanyRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
-            'address' => ['nullable', 'string'],
             'timezone' => ['required', 'string', 'timezone'],
             'user_name' => ['required', 'string', 'max:255'],
             'user_email' => ['required', 'email', 'max:255', 'unique:users,email'],

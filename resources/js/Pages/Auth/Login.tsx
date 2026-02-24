@@ -58,9 +58,6 @@ export default function Login() {
             <form onSubmit={submit} className="space-y-5 w-full">
                 <div className="text-center space-y-1 pb-3">
                     <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Sign In</h1>
-                    <p className="text-sm text-gray-600">
-                        Welcome back! Log in with your credentials.
-                    </p>
                 </div>
 
                 {/* Demo credentials alert */}
@@ -84,14 +81,14 @@ export default function Login() {
                         onClose={() => setErrorMessage(null)}
                     >
                         <AlertIcon>
-                        <XCircle />
+                            <XCircle />
                         </AlertIcon>
 
                         <AlertContent>
-                        <AlertDescription>
-                            {errorMessage || errors.email || errors.password || 
-                            'Authentication failed. Please try again.'}
-                        </AlertDescription>
+                            <AlertDescription>
+                                {errorMessage || errors.email || errors.password ||
+                                    'Authentication failed. Please try again.'}
+                            </AlertDescription>
                         </AlertContent>
                     </Alert>
                 )}
@@ -106,13 +103,13 @@ export default function Login() {
                         onClose={() => setSuccessMessage(null)}
                     >
                         <AlertIcon>
-                        <CheckCircle />
+                            <CheckCircle />
                         </AlertIcon>
 
                         <AlertContent>
-                        <AlertDescription>
-                            {successMessage}
-                        </AlertDescription>
+                            <AlertDescription>
+                                {successMessage}
+                            </AlertDescription>
                         </AlertContent>
                     </Alert>
                 )}

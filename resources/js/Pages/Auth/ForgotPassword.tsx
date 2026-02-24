@@ -30,7 +30,7 @@ export default function ForgotPassword() {
             </Head>
             <div className="w-full max-w-md">
                 <Card>
-                    <CardHeader>
+                    <CardHeader className='p-4'>
                         <CardTitle>Forgot Password</CardTitle>
                         <CardDescription>
                             Enter your email address and we'll send you a link to reset your password.

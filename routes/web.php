@@ -67,6 +67,7 @@ Route::middleware(['auth', 'company.context'])->group(function () {
 
         // Contract Types routes (only for company admins)
         Route::middleware('can:manage,App\Models\ContractType')->group(function () {
+            Route::get('/settings/contract-types', [ContractTypeController::class, 'index'])->name('contract-types.index');
             Route::post('/contract-types', [ContractTypeController::class, 'store'])->name('contract-types.store');
             Route::put('/contract-types/{contractType}', [ContractTypeController::class, 'update'])->name('contract-types.update');
             Route::delete('/contract-types/{contractType}', [ContractTypeController::class, 'destroy'])->name('contract-types.destroy');

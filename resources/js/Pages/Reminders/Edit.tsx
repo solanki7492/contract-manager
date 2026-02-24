@@ -156,7 +156,7 @@ export default function EditReminder({ reminder, contracts, users }: EditReminde
                                     {/* Trigger Type */}
                                     <div>
                                         <Label htmlFor="trigger_type" className="text-sm font-medium text-gray-900 mb-2 block">
-                                            Trigger Type <span className="text-red-500">*</span>
+                                            Date <span className="text-red-500">*</span>
                                         </Label>
                                         <select
                                             id="trigger_type"

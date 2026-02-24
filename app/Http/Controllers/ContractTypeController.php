@@ -15,10 +15,11 @@ class ContractTypeController extends Controller
     public function index(Request $request): Response
     {
         $contractTypes = ContractType::where('company_id', $request->user()->company_id)
+            ->orderBy('is_system', 'desc')
             ->orderBy('name')
             ->get();
 
-        return Inertia::render('ContractTypes/Index', [
+        return Inertia::render('Settings/ContractTypes', [
             'contractTypes' => $contractTypes,
         ]);
     }

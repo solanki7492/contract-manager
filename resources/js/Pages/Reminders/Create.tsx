@@ -21,7 +21,7 @@ interface User {
 }
 
 interface Recipient {
-    type: 'user' | 'external';
+    recipient_type: 'user' | 'external';
     id?: string;
     email?: string;
 }
@@ -50,7 +50,7 @@ export default function CreateReminder({ contracts, users, preselectedContractId
     };
 
     const addRecipient = (type: 'user' | 'external') => {
-        setData('recipients', [...data.recipients, { type, id: '', email: '' }]);
+        setData('recipients', [...data.recipients, { recipient_type: type, id: '', email: '' }]);
     };
 
     const removeRecipient = (index: number) => {
@@ -60,7 +60,7 @@ export default function CreateReminder({ contracts, users, preselectedContractId
 
     const updateRecipient = (index: number, field: keyof Recipient, value: string) => {
         const newRecipients = [...data.recipients];
-        if (field === 'type') {
+        if (field === 'recipient_type') {
             newRecipients[index][field] = value as 'user' | 'external';
         } else {
             newRecipients[index][field] = value;
@@ -128,7 +128,7 @@ export default function CreateReminder({ contracts, users, preselectedContractId
                                     {/* Trigger Type */}
                                     <div>
                                         <Label htmlFor="trigger_type" className="text-sm font-medium text-gray-900 mb-2 block">
-                                            Trigger Type <span className="text-red-500">*</span>
+                                            Date <span className="text-red-500">*</span>
                                         </Label>
                                         <select
                                             id="trigger_type"
@@ -283,14 +283,14 @@ export default function CreateReminder({ contracts, users, preselectedContractId
                                                 {data.recipients.map((recipient, index) => (
                                                     <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-md border">
                                                         <select
-                                                            value={recipient.type}
-                                                            onChange={(e) => updateRecipient(index, 'type', e.target.value as 'user' | 'external')}
+                                                            value={recipient.recipient_type}
+                                                            onChange={(e) => updateRecipient(index, 'recipient_type', e.target.value as 'user' | 'external')}
                                                             className="flex-1 h-9 px-3 py-1 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                                         >
                                                             <option value="user">Internal User</option>
                                                             <option value="external">External Email</option>
                                                         </select>
-                                                        {recipient.type === 'user' ? (
+                                                        {recipient.recipient_type === 'user' ? (
                                                             <select
                                                                 value={recipient.id || ''}
                                                                 onChange={(e) => updateRecipient(index, 'id', e.target.value)}

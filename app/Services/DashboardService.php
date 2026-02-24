@@ -39,7 +39,7 @@ class DashboardService
     public function getExpiringContracts(int $companyId, int $days = 30)
     {
         return Contract::where('company_id', $companyId)
-            ->with(['contractType', 'creator'])
+            ->with(['contractType', 'creator', 'nextReminder'])
             ->expiringInDays($days)
             ->orderBy('end_date', 'asc')
             ->limit(10)

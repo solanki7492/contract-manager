@@ -36,6 +36,9 @@ interface Contract {
     end_date: string;
     days_until_end: number;
     status: 'active' | 'expiring' | 'expired';
+    next_reminder?: {
+        trigger_datetime: string;
+    } | null;
 }
 
 interface Reminder {
@@ -78,7 +81,7 @@ interface PageProps {
     [key: string]: unknown;
 }
 
-export default function Dashboard({ stats, expiringContracts, upcomingReminders, companies, totalCompanies, totalUsers }: DashboardProps) {
+export default function Dashboard({ stats, expiringContracts, companies, totalCompanies, totalUsers }: DashboardProps) {
     const page = usePage<PageProps>();
     const isSuperAdmin = page.props.auth?.user?.role === 'superadmin';
 
@@ -273,7 +276,7 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders,
             color: 'text-blue-500',
             bgColor: 'bg-blue-500/10',
             icon: FileCheck,
-            trend: '+12.5%'
+            href: '/contracts?status=active',
         },
         {
             label: 'Expiring in 30 Days',
@@ -281,7 +284,7 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders,
             color: 'text-yellow-500',
             bgColor: 'bg-yellow-500/10',
             icon: Clock,
-            trend: '+5.2%'
+            href: '/contracts?expiring_days=30',
         },
         {
             label: 'Expiring in 60 Days',
@@ -289,7 +292,7 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders,
             color: 'text-orange-500',
             bgColor: 'bg-orange-500/10',
             icon: AlertTriangle,
-            trend: '+3.1%'
+            href: '/contracts?expiring_days=60',
         },
         {
             label: 'Expiring in 90 Days',
@@ -297,7 +300,7 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders,
             color: 'text-red-500',
             bgColor: 'bg-red-500/10',
             icon: Flame,
-            trend: '-2.4%'
+            href: '/contracts?expiring_days=90',
         },
         {
             label: 'Reminders (7 Days)',
@@ -305,7 +308,7 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders,
             color: 'text-purple-500',
             bgColor: 'bg-purple-500/10',
             icon: BellRing,
-            trend: '+8.3%'
+            href: '/reminders?upcoming_days=7',
         },
         {
             label: 'Reminders (30 Days)',
@@ -313,7 +316,7 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders,
             color: 'text-indigo-500',
             bgColor: 'bg-indigo-500/10',
             icon: Bell,
-            trend: '+6.7%'
+            href: '/reminders?upcoming_days=30',
         },
     ];
 
@@ -355,32 +358,27 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders,
                         {statCards.map((stat, index) => {
                             const Icon = stat.icon;
                             return (
-                                <Card key={index} className="hover:shadow-lg transition-shadow">
-                                    <CardContent className="p-6">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex-1">
-                                                <p className="text-sm font-medium text-muted-foreground mb-1">
-                                                    {stat.label}
-                                                </p>
-                                                <div className="flex items-baseline gap-2">
-                                                    <p className="text-3xl font-bold text-mono">
-                                                        {stat.value}
+                                <Link key={index} href={stat.href}>
+                                    <Card className="hover:shadow-lg transition-all hover:scale-[1.02] cursor-pointer">
+                                        <CardContent className="p-6">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex-1">
+                                                    <p className="text-sm font-medium text-muted-foreground mb-1">
+                                                        {stat.label}
                                                     </p>
-                                                    <span className={cn(
-                                                        "text-xs font-medium flex items-center gap-1",
-                                                        stat.trend.startsWith('+') ? "text-green-600" : "text-red-600"
-                                                    )}>
-                                                        <TrendingUp className="h-3 w-3" />
-                                                        {stat.trend}
-                                                    </span>
+                                                    <div className="flex items-baseline gap-2">
+                                                        <p className="text-3xl font-bold text-mono">
+                                                            {stat.value}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className={cn("p-3 rounded-lg", stat.bgColor)}>
+                                                    <Icon className={cn("h-6 w-6", stat.color)} />
                                                 </div>
                                             </div>
-                                            <div className={cn("p-3 rounded-lg", stat.bgColor)}>
-                                                <Icon className={cn("h-6 w-6", stat.color)} />
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                                        </CardContent>
+                                    </Card>
+                                </Link>
                             );
                         })}
                     </div>
@@ -411,6 +409,7 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders,
                                                 <TableHead>Counterparty</TableHead>
                                                 <TableHead>End Date</TableHead>
                                                 <TableHead>Days Left</TableHead>
+                                                <TableHead>Next Reminder</TableHead>
                                                 <TableHead>Status</TableHead>
                                                 <TableHead className="text-right">Actions</TableHead>
                                             </TableRow>
@@ -432,6 +431,26 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders,
                                                         <span className="font-medium">
                                                             {contract.days_until_end} days
                                                         </span>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {contract.next_reminder ? (
+                                                            <div className="flex items-center gap-2">
+                                                                <Bell className="h-4 w-4 text-muted-foreground" />
+                                                                {new Date(contract.next_reminder.trigger_datetime).toLocaleString('en-GB', {
+                                                                    timeZone: 'UTC',
+                                                                    day: '2-digit',
+                                                                    month: '2-digit',
+                                                                    year: 'numeric',
+                                                                    hour: '2-digit',
+                                                                    minute: '2-digit',
+                                                                    hour12: true,
+                                                                }).toUpperCase()}
+                                                            </div>
+                                                        ) : (
+                                                            <span className="text-sm text-muted-foreground">
+                                                                No upcoming reminders
+                                                            </span>
+                                                        )}
                                                     </TableCell>
                                                     <TableCell>
                                                         <Badge
@@ -459,7 +478,7 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders,
                     </Card>
 
                     {/* Upcoming Reminders */}
-                    <Card>
+                    {/* <Card>
                         <CardHeader className="border-b flex items-center justify-between p-4">
                             <div>
                                 <CardTitle className="text-xl">Upcoming Reminders</CardTitle>
@@ -506,7 +525,7 @@ export default function Dashboard({ stats, expiringContracts, upcomingReminders,
                                 </div>
                             )}
                         </CardContent>
-                    </Card>
+                    </Card> */}
                 </div>
             </Container>
         </MainLayout>

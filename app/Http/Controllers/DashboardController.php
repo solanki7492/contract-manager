@@ -50,12 +50,11 @@ class DashboardController extends Controller
         
         $stats = $this->dashboardService->getStats($user->company_id);
         $expiringContracts = $this->dashboardService->getExpiringContracts($user->company_id, 90);
-        $upcomingReminders = $this->dashboardService->getUpcomingReminders($user->company_id, 30);
+        //$upcomingReminders = $this->dashboardService->getUpcomingReminders($user->company_id, 30);
 
         return Inertia::render('Dashboard/Index', [
             'stats' => $stats,
             'expiringContracts' => $expiringContracts,
-            'upcomingReminders' => $upcomingReminders,
         ]);
     }
 }

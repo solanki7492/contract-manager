@@ -143,4 +143,11 @@ class Contract extends Model
         return $query->where('end_date', '<=', $targetDate)
                      ->where('end_date', '>=', Carbon::now());
     }
+
+    public function nextReminder()
+    {
+        return $this->hasOne(Reminder::class)
+            ->whereDate('trigger_datetime', '>=', now())
+            ->orderBy('trigger_datetime', 'asc');
+    }
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateProfileRequest;
-use App\Models\ContractType;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -15,19 +14,9 @@ class ProfileController extends Controller
 {
     public function show(Request $request): Response
     {
-        $data = [
+        return Inertia::render('Profile/Show', [
             'user' => $request->user(),
-        ];
-
-        // Include contract types if user is company admin
-        if ($request->user()->role->canManageUsers()) {
-            $data['contractTypes'] = ContractType::where('company_id', $request->user()->company_id)
-                ->orderBy('is_system', 'desc')
-                ->orderBy('name')
-                ->get();
-        }
-
-        return Inertia::render('Profile/Show', $data);
+        ]);
     }
 
     public function update(UpdateProfileRequest $request): RedirectResponse

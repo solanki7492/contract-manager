@@ -1,5 +1,5 @@
 import { useForm, Link } from '@inertiajs/react';
-import { Building2, ArrowLeft, Loader2, User, Mail, Phone, MapPin, Globe } from 'lucide-react';
+import { Building2, ArrowLeft, Loader2, User, Mail, Phone, Globe } from 'lucide-react';
 import { FormEvent } from 'react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Button } from '@/components/ui/button';
@@ -12,9 +12,7 @@ import { Head } from '@inertiajs/react';
 export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
-        email: '',
         phone: '',
-        address: '',
         timezone: 'UTC',
         user_name: '',
         user_email: '',
@@ -25,18 +23,33 @@ export default function Create() {
         post('/companies');
     };
 
-    const timezones = [
-        'UTC',
-        'America/New_York',
-        'America/Chicago',
-        'America/Denver',
-        'America/Los_Angeles',
-        'Europe/London',
-        'Europe/Paris',
-        'Asia/Tokyo',
-        'Asia/Dubai',
-        'Australia/Sydney',
-    ];
+    const getFormattedTimezones = () => {
+        const zones = (Intl as any).supportedValuesOf('timeZone');
+        const now = new Date();
+
+        return zones.map((tz: string) => {
+            const dtf = new Intl.DateTimeFormat('en-US', {
+                timeZone: tz,
+                timeZoneName: 'longOffset',
+            });
+
+            const parts = dtf.formatToParts(now);
+            const offsetPart = parts.find((p) => p.type === 'timeZoneName')?.value || '';
+
+            // offsetPart example: "GMT-06:00"
+            const cleanOffset = offsetPart.replace('GMT', 'UTC');
+
+            return {
+                value: tz,
+                label: `(${cleanOffset}) ${tz.replace(/_/g, ' ')}`,
+                offset: cleanOffset,
+            };
+        }).sort((a: { offset: string }, b: { offset: string }) => {
+            return a.offset.localeCompare(b.offset);
+        });
+    };
+
+    const timezones = getFormattedTimezones();
 
     return (
         <MainLayout>
@@ -96,8 +109,7 @@ export default function Create() {
                                         {errors.name && <p className="mt-1.5 text-xs text-red-600">{errors.name}</p>}
                                     </div>
 
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                                        <div>
+                                    {/* <div>
                                             <Label htmlFor="email" className="text-sm font-medium text-gray-900 mb-2 block">
                                                 Company Email
                                             </Label>
@@ -113,28 +125,27 @@ export default function Create() {
                                                 />
                                             </div>
                                             {errors.email && <p className="mt-1.5 text-xs text-red-600">{errors.email}</p>}
-                                        </div>
-
-                                        <div>
-                                            <Label htmlFor="phone" className="text-sm font-medium text-gray-900 mb-2 block">
-                                                Phone
-                                            </Label>
-                                            <div className="relative">
-                                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                                <Input
-                                                    id="phone"
-                                                    type="text"
-                                                    value={data.phone}
-                                                    onChange={(e) => setData('phone', e.target.value)}
-                                                    className={`pl-10 h-10 ${errors.phone ? 'border-red-500' : ''}`}
-                                                    placeholder="+1 (555) 000-0000"
-                                                />
-                                            </div>
-                                            {errors.phone && <p className="mt-1.5 text-xs text-red-600">{errors.phone}</p>}
-                                        </div>
-                                    </div>
+                                        </div> */}
 
                                     <div>
+                                        <Label htmlFor="phone" className="text-sm font-medium text-gray-900 mb-2 block">
+                                            Phone
+                                        </Label>
+                                        <div className="relative">
+                                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                            <Input
+                                                id="phone"
+                                                type="text"
+                                                value={data.phone}
+                                                onChange={(e) => setData('phone', e.target.value)}
+                                                className={`pl-10 h-10 ${errors.phone ? 'border-red-500' : ''}`}
+                                                placeholder="+1 (555) 000-0000"
+                                            />
+                                        </div>
+                                        {errors.phone && <p className="mt-1.5 text-xs text-red-600">{errors.phone}</p>}
+                                    </div>
+
+                                    {/* <div>
                                         <Label htmlFor="address" className="text-sm font-medium text-gray-900 mb-2 block">
                                             Address
                                         </Label>
@@ -150,7 +161,7 @@ export default function Create() {
                                             />
                                         </div>
                                         {errors.address && <p className="mt-1.5 text-xs text-red-600">{errors.address}</p>}
-                                    </div>
+                                    </div> */}
 
                                     <div>
                                         <Label htmlFor="timezone" className="text-sm font-medium text-gray-900 mb-2 block">
@@ -164,9 +175,9 @@ export default function Create() {
                                                 onChange={(e) => setData('timezone', e.target.value)}
                                                 className={`w-full h-10 pl-10 pr-4 py-2 text-sm border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.timezone ? 'border-red-500' : 'border-gray-300'}`}
                                             >
-                                                {timezones.map((tz) => (
-                                                    <option key={tz} value={tz}>
-                                                        {tz}
+                                                {timezones.map((tz: any) => (
+                                                    <option key={tz.value} value={tz.value}>
+                                                        {tz.label}
                                                     </option>
                                                 ))}
                                             </select>

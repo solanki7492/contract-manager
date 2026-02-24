@@ -1,7 +1,7 @@
 import MainLayout from '../../Layouts/MainLayout';
 import { Head, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
-import { Plus, Eye, Edit, FileText } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Plus, Eye, Edit, FileText, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -38,6 +38,7 @@ interface PageProps {
         status?: string;
         type?: string;
         end_date?: string;
+        expiring_days?: string;
     };
 }
 
@@ -46,9 +47,17 @@ export default function ContractsIndex({ contracts, contractTypes, filters }: Pa
     const [status, setStatus] = useState(filters.status || '');
     const [type, setType] = useState(filters.type || '');
     const [endDate, setEndDate] = useState(filters.end_date || '');
+    const [expiringDays, setExpiringDays] = useState(filters.expiring_days || '');
+
+    // Set expiring_days from URL params on mount
+    useEffect(() => {
+        if (filters.expiring_days) {
+            setExpiringDays(filters.expiring_days);
+        }
+    }, [filters.expiring_days]);
 
     const handleFilter = () => {
-        router.get('/contracts', { search, status, type, end_date: endDate }, { preserveState: true });
+        router.get('/contracts', { search, status, type, end_date: endDate, expiring_days: expiringDays }, { preserveState: true });
     };
 
     const handleReset = () => {
@@ -56,7 +65,13 @@ export default function ContractsIndex({ contracts, contractTypes, filters }: Pa
         setStatus('');
         setType('');
         setEndDate('');
+        setExpiringDays('');
         router.get('/contracts');
+    };
+
+    const clearExpiringDaysFilter = () => {
+        setExpiringDays('');
+        router.get('/contracts', { search, status, type, end_date: endDate }, { preserveState: true });
     };
 
     return (
@@ -79,18 +94,44 @@ export default function ContractsIndex({ contracts, contractTypes, filters }: Pa
                         </Button>
                     </div>
 
+                    {/* Active Filter Badge */}
+                    {expiringDays && (
+                        <Card className="bg-blue-50 border-blue-200">
+                            <CardContent className="p-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <Badge variant="secondary" className="bg-blue-600 text-white">
+                                            Active Filter
+                                        </Badge>
+                                        <span className="text-sm font-medium text-blue-900">
+                                            Showing contracts expiring in {expiringDays} days
+                                        </span>
+                                    </div>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={clearExpiringDaysFilter}
+                                        className="text-blue-900 hover:text-blue-700"
+                                    >
+                                        <X className="w-4 h-4 mr-1" />
+                                        Clear Filter
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
+
                     {/* Filters */}
                     <Card>
-                        <CardContent className="p-6 grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
-                            <div>
-                                <Input
-                                    type="text"
-                                    placeholder="Search contracts..."
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    className="h-10 w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                />
-                            </div>
+                        <CardContent className="p-6 grid grid-cols-1 md:grid-cols-6 gap-4 items-center">                          <div>
+                            <Input
+                                type="text"
+                                placeholder="Search contracts..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                className="h-10 w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                        </div>
                             <div>
                                 <select
                                     value={status}
@@ -113,6 +154,18 @@ export default function ContractsIndex({ contracts, contractTypes, filters }: Pa
                                     {contractTypes.map((ct) => (
                                         <option key={ct.id} value={ct.id}>{ct.name}</option>
                                     ))}
+                                </select>
+                            </div>
+                            <div>
+                                <select
+                                    value={expiringDays}
+                                    onChange={(e) => setExpiringDays(e.target.value)}
+                                    className="h-10 w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                >
+                                    <option value="">Expiring Days</option>
+                                    <option value="30">Next 30 Days</option>
+                                    <option value="60">Next 60 Days</option>
+                                    <option value="90">Next 90 Days</option>
                                 </select>
                             </div>
                             <div>

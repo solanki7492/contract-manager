@@ -31,8 +31,8 @@ export function SidebarHeader() {
         </div>
         <div className="hidden dark:block">
           <img
-            src={'/media/app/default-logo-dark.svg'}
-            className="default-logo h-[22px] max-w-none"
+            src={'/media/app/default-logo-dark.png'}
+            className="default-logo h-[38px] max-w-none"
             alt="Default Dark Logo"
           />
           <img

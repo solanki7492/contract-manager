@@ -1,6 +1,7 @@
 import MainLayout from '../../Layouts/MainLayout';
 import { Link, router } from '@inertiajs/react';
-import { Plus, Edit, Eye, Bell } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Plus, Edit, Eye, Bell, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -8,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Container } from '@/components/common/container';
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 import { Head } from '@inertiajs/react';
+import { Input } from '@/components/ui/input';
 
 interface Contract {
     id: number;
@@ -35,11 +37,58 @@ interface PageProps {
         total: number;
         links: Array<{ url: string | null; label: string; active: boolean }>;
     };
-    contracts: unknown;
-    filters: unknown;
+    contracts: Contract[];
+    filters: {
+        status?: string;
+        contract_id?: string;
+        date_from?: string;
+        date_to?: string;
+        upcoming_days?: string;
+    };
 }
 
-export default function RemindersIndex({ reminders }: PageProps) {
+export default function RemindersIndex({ reminders, contracts, filters }: PageProps) {
+    const [status, setStatus] = useState(filters.status || '');
+    const [contractId, setContractId] = useState(filters.contract_id || '');
+    const [dateFrom, setDateFrom] = useState(filters.date_from || '');
+    const [dateTo, setDateTo] = useState(filters.date_to || '');
+    const [upcomingDays, setUpcomingDays] = useState(filters.upcoming_days || '');
+
+    // Set upcoming_days from URL params on mount
+    useEffect(() => {
+        if (filters.upcoming_days) {
+            setUpcomingDays(filters.upcoming_days);
+        }
+    }, [filters.upcoming_days]);
+
+    const handleFilter = () => {
+        router.get('/reminders', {
+            status,
+            contract_id: contractId,
+            date_from: dateFrom,
+            date_to: dateTo,
+            upcoming_days: upcomingDays
+        }, { preserveState: true });
+    };
+
+    const handleReset = () => {
+        setStatus('');
+        setContractId('');
+        setDateFrom('');
+        setDateTo('');
+        setUpcomingDays('');
+        router.get('/reminders');
+    };
+
+    const clearUpcomingDaysFilter = () => {
+        setUpcomingDays('');
+        router.get('/reminders', {
+            status,
+            contract_id: contractId,
+            date_from: dateFrom,
+            date_to: dateTo
+        }, { preserveState: true });
+    };
     return (
         <MainLayout>
             <Head>
@@ -59,6 +108,99 @@ export default function RemindersIndex({ reminders }: PageProps) {
                             </Link>
                         </Button>
                     </div>
+
+                    {/* Active Filter Badge */}
+                    {upcomingDays && (
+                        <Card className="bg-purple-50 border-purple-200">
+                            <CardContent className="p-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <Badge variant="secondary" className="bg-purple-600 text-white">
+                                            Active Filter
+                                        </Badge>
+                                        <span className="text-sm font-medium text-purple-900">
+                                            Showing reminders in the next {upcomingDays} days
+                                        </span>
+                                    </div>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={clearUpcomingDaysFilter}
+                                        className="text-purple-900 hover:text-purple-700"
+                                    >
+                                        <X className="w-4 h-4 mr-1" />
+                                        Clear Filter
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {/* Filters */}
+                    <Card>
+                        <CardContent className="p-6 grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+                            <div>
+                                <select
+                                    value={status}
+                                    onChange={(e) => setStatus(e.target.value)}
+                                    className="h-10 w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                >
+                                    <option value="">All Statuses</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="sent">Sent</option>
+                                    <option value="handled">Handled</option>
+                                    <option value="failed">Failed</option>
+                                </select>
+                            </div>
+                            <div>
+                                <select
+                                    value={contractId}
+                                    onChange={(e) => setContractId(e.target.value)}
+                                    className="h-10 w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                >
+                                    <option value="">All Contracts</option>
+                                    {contracts && contracts.map((contract) => (
+                                        <option key={contract.id} value={contract.id}>{contract.title}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <select
+                                    value={upcomingDays}
+                                    onChange={(e) => setUpcomingDays(e.target.value)}
+                                    className="h-10 w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                >
+                                    <option value="">Upcoming Days</option>
+                                    <option value="7">Next 7 Days</option>
+                                    <option value="30">Next 30 Days</option>
+                                </select>
+                            </div>
+                            <div>
+                                <Input
+                                    type="date"
+                                    placeholder="From Date"
+                                    value={dateFrom}
+                                    onChange={(e) => setDateFrom(e.target.value)}
+                                    className="h-10 w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                />
+                            </div>
+                            <div className="flex space-x-2">
+                                <Button
+                                    onClick={handleFilter}
+                                    className="flex-1"
+                                >
+                                    Filter
+                                </Button>
+                                <Button
+                                    onClick={handleReset}
+                                    variant="secondary"
+                                    className="flex-1"
+                                >
+                                    Reset
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
 
                     {/* Reminders Table */}
                     <Card>
