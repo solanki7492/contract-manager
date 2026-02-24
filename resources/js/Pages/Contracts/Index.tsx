@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Container } from '@/components/common/container';
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
+import { DatePicker } from '@/components/ui/date-picker';
 
 interface ContractType {
     id: number;
@@ -169,12 +170,10 @@ export default function ContractsIndex({ contracts, contractTypes, filters }: Pa
                                 </select>
                             </div>
                             <div>
-                                <Input
-                                    id='end_date'
-                                    type='date'
+                                <DatePicker
                                     value={endDate}
-                                    onChange={(e) => setEndDate(e.target.value)}
-                                    className='h-10 w-full px-3 py-2 pr-10 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                                    onChange={(date) => setEndDate(date)}
+                                    placeholder="End Date"
                                 />
                             </div>
                             <div className="flex space-x-2">

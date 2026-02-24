@@ -10,6 +10,7 @@ import { Container } from '@/components/common/container';
 import { DeleteConfirmDialog } from '@/components/common/delete-confirm-dialog';
 import { Head } from '@inertiajs/react';
 import { Input } from '@/components/ui/input';
+import { DatePicker } from '@/components/ui/date-picker';
 
 interface Contract {
     id: number;
@@ -176,12 +177,10 @@ export default function RemindersIndex({ reminders, contracts, filters }: PagePr
                                 </select>
                             </div>
                             <div>
-                                <Input
-                                    type="date"
-                                    placeholder="From Date"
+                                <DatePicker
                                     value={dateFrom}
-                                    onChange={(e) => setDateFrom(e.target.value)}
-                                    className="h-10 w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    onChange={(date) => setDateFrom(date)}
+                                    placeholder="From Date"
                                 />
                             </div>
                             <div className="flex space-x-2">
