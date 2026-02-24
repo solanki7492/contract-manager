@@ -4,8 +4,7 @@ import * as React from 'react';
 import { Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Label } from '@/components/ui/label';
 
 interface TimePickerProps {
   value?: string;
@@ -16,116 +15,180 @@ interface TimePickerProps {
 }
 
 export function TimePicker({ value, onChange, placeholder = 'Pick a time', disabled, className }: TimePickerProps) {
-  const [time, setTime] = React.useState(value || '09:00');
-  const [hours, setHours] = React.useState(value ? value.split(':')[0] : '09');
-  const [minutes, setMinutes] = React.useState(value ? value.split(':')[1] : '00');
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [tempTime, setTempTime] = React.useState<string>(value || '09:00');
+  const [time, setTime] = React.useState<string | undefined>(value);
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
 
   React.useEffect(() => {
     if (value) {
-      const [h, m] = value.split(':');
-      setHours(h);
-      setMinutes(m);
       setTime(value);
+      setTempTime(value);
+    } else {
+      setTime(undefined);
+      setTempTime('09:00');
     }
   }, [value]);
 
-  const handleHoursChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value.replace(/\D/g, '');
-    if (val.length > 2) val = val.slice(0, 2);
-    const numVal = parseInt(val || '0');
-    if (numVal > 23) val = '23';
-    setHours(val.padStart(2, '0'));
-    updateTime(val.padStart(2, '0'), minutes);
-  };
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
 
-  const handleMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value.replace(/\D/g, '');
-    if (val.length > 2) val = val.slice(0, 2);
-    const numVal = parseInt(val || '0');
-    if (numVal > 59) val = '59';
-    setMinutes(val.padStart(2, '0'));
-    updateTime(hours, val.padStart(2, '0'));
-  };
-
-  const updateTime = (h: string, m: string) => {
-    const newTime = `${h.padStart(2, '0')}:${m.padStart(2, '0')}`;
-    setTime(newTime);
-    if (onChange) {
-      onChange(newTime);
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
     }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
+  const handleApply = () => {
+    if (onChange) {
+      onChange(tempTime);
+      setTime(tempTime);
+    }
+    setIsOpen(false);
   };
 
-  const formatDisplayTime = () => {
-    if (!hours || !minutes) return placeholder;
-    const h = parseInt(hours);
-    const m = parseInt(minutes);
-    const period = h >= 12 ? 'PM' : 'AM';
-    const displayHour = h === 0 ? 12 : h > 12 ? h - 12 : h;
-    return `${displayHour}:${m.toString().padStart(2, '0')} ${period}`;
+  const handleReset = () => {
+    setTempTime('09:00');
+    setTime(undefined);
+    if (onChange) {
+      onChange('');
+    }
+    setIsOpen(false);
+  };
+
+  const formatTimeDisplay = (timeValue: string | undefined) => {
+    if (!timeValue) return placeholder;
+
+    // Parse the time
+    const [hours, minutes] = timeValue.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes);
+
+    // Format to 12-hour format with AM/PM
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+  };
+
+  // Generate hour options (0-23)
+  const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
+  // Generate minute options (0, 15, 30, 45)
+  const minutes = ['00', '15', '30', '45'];
+
+  const [selectedHour, selectedMinute] = tempTime.split(':');
+
+  const handleHourChange = (hour: string) => {
+    setTempTime(`${hour}:${selectedMinute}`);
+  };
+
+  const handleMinuteChange = (minute: string) => {
+    setTempTime(`${selectedHour}:${minute}`);
   };
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={cn(
-            'w-full h-10 justify-start text-left font-normal',
-            !time && 'text-muted-foreground',
-            className
-          )}
-          disabled={disabled}
+    <div className="relative w-full">
+      <Button
+        ref={buttonRef}
+        type="button"
+        variant="outline"
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        className={cn(
+          'w-full h-10 justify-start text-left font-normal',
+          !time && 'text-muted-foreground',
+          className
+        )}
+        disabled={disabled}
+      >
+        <Clock className="mr-2 h-4 w-4" />
+        <span>{formatTimeDisplay(time)}</span>
+      </Button>
+
+      {isOpen && (
+        <div
+          ref={dropdownRef}
+          className="absolute z-[9999] mt-2 bg-popover border border-border rounded-md shadow-lg"
+          style={{ top: '100%', left: 0 }}
         >
-          <Clock className="mr-2 h-4 w-4" />
-          <span>{formatDisplayTime()}</span>
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-4" align="start">
-        <div className="flex items-center gap-2">
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-medium text-gray-700">Hours</label>
-            <Input
-              type="text"
-              value={hours}
-              onChange={handleHoursChange}
-              className="w-16 text-center"
-              placeholder="00"
-              maxLength={2}
-            />
+          <div className="p-4">
+            <div className="space-y-4">
+              <div>
+                <Label className="text-sm font-medium mb-2 block">Time</Label>
+                <div className="flex items-center gap-2">
+                  <select
+                    value={selectedHour}
+                    onChange={(e) => handleHourChange(e.target.value)}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    {hours.map((hour) => (
+                      <option key={hour} value={hour}>
+                        {hour}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="text-lg font-semibold">:</span>
+                  <select
+                    value={selectedMinute}
+                    onChange={(e) => handleMinuteChange(e.target.value)}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    {minutes.map((minute) => (
+                      <option key={minute} value={minute}>
+                        {minute}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="mt-2 text-xs text-muted-foreground">
+                  Selected: {formatTimeDisplay(tempTime)}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Quick Select</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  {['09:00', '12:00', '14:00', '17:00', '18:00', '20:00'].map((quickTime) => (
+                    <Button
+                      key={quickTime}
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setTempTime(quickTime)}
+                      className={cn(
+                        'h-8 text-xs',
+                        tempTime === quickTime && 'bg-primary text-primary-foreground'
+                      )}
+                    >
+                      {formatTimeDisplay(quickTime)}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="pt-6 text-2xl font-semibold">:</div>
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-medium text-gray-700">Minutes</label>
-            <Input
-              type="text"
-              value={minutes}
-              onChange={handleMinutesChange}
-              className="w-16 text-center"
-              placeholder="00"
-              maxLength={2}
-            />
-          </div>
-        </div>
-        <div className="mt-3 grid grid-cols-4 gap-2">
-          {['00:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '23:59'].map((presetTime) => (
-            <Button
-              key={presetTime}
-              type="button"
-              variant="outline"
-              size="sm"
-              className="text-xs"
-              onClick={() => {
-                const [h, m] = presetTime.split(':');
-                setHours(h);
-                setMinutes(m);
-                updateTime(h, m);
-              }}
-            >
-              {presetTime}
+          <div className="flex items-center justify-end gap-1.5 border-t border-border p-3">
+            <Button variant="outline" size="sm" onClick={handleReset}>
+              Reset
             </Button>
-          ))}
+            <Button size="sm" onClick={handleApply}>
+              Apply
+            </Button>
+          </div>
         </div>
-      </PopoverContent>
-    </Popover>
+      )}
+    </div>
   );
 }

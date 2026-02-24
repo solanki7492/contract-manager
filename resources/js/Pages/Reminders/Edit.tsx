@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/common/container';
 import { ArrowLeft, Bell, Calendar, Users, MessageSquare, Plus, Trash2, Loader2 } from 'lucide-react';
 import { Head } from '@inertiajs/react';
+import { DatePicker } from '@/components/ui/date-picker';
+import { TimePicker } from '@/components/ui/time-picker';
 
 interface Contract {
     id: number;
@@ -209,14 +211,11 @@ export default function EditReminder({ reminder, contracts, users }: EditReminde
                                             <Label htmlFor="custom_date" className="text-sm font-medium text-gray-900 mb-2 block">
                                                 Custom Date <span className="text-red-500">*</span>
                                             </Label>
-                                            <input
-                                                    id="custom_date"
-                                                    type="date"
-                                                    value={data.custom_date}
-                                                    onChange={(e) => setData('custom_date', e.target.value)}
-                                                    className="h-10 w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                    required
-                                                />
+                                            <DatePicker
+                                                value={data.custom_date}
+                                                onChange={(date) => setData('custom_date', date)}
+                                                placeholder="Pick custom date"
+                                            />
                                             {errors.custom_date && <div className="mt-1.5 text-xs text-red-600">{errors.custom_date}</div>}
                                         </div>
                                     )}
@@ -225,13 +224,10 @@ export default function EditReminder({ reminder, contracts, users }: EditReminde
                                         <Label htmlFor="send_time" className="text-sm font-medium text-gray-900 mb-2 block">
                                             Send Time <span className="text-red-500">*</span>
                                         </Label>
-                                        <input
-                                            id="send_time"
-                                            type="time"
+                                        <TimePicker
                                             value={data.send_time}
-                                            onChange={(e) => setData('send_time', e.target.value)}
-                                            className="h-10 w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                            required
+                                            onChange={(time) => setData('send_time', time)}
+                                            placeholder="Pick send time"
                                         />
                                         {errors.send_time && <div className="mt-1.5 text-xs text-red-600">{errors.send_time}</div>}
                                     </div>

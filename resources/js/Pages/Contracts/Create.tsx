@@ -9,6 +9,7 @@ import { Container } from '@/components/common/container';
 import { ArrowLeft, FileText, Calendar, Clock, FileUp } from 'lucide-react';
 import { Head } from '@inertiajs/react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { DatePicker } from '@/components/ui/date-picker';
 
 interface ContractType {
     id: number;
@@ -145,12 +146,10 @@ export default function CreateContract({ contractTypes }: CreateContractProps) {
                                             <Label htmlFor="start_date" className="text-sm font-medium text-gray-900 mb-2 block">
                                                 Start Date
                                             </Label>
-                                            <input
-                                                id="start_date"
-                                                type="date"
+                                            <DatePicker
                                                 value={data.start_date}
-                                                onChange={(e) => setData('start_date', e.target.value)}
-                                                className="h-10 w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                onChange={(date) => setData('start_date', date)}
+                                                placeholder="Pick start date"
                                             />
                                             {errors.start_date && <div className="mt-1.5 text-xs text-red-600">{errors.start_date}</div>}
                                         </div>
@@ -159,13 +158,10 @@ export default function CreateContract({ contractTypes }: CreateContractProps) {
                                             <Label htmlFor="end_date" className="text-sm font-medium text-gray-900 mb-2 block">
                                                 End Date <span className="text-red-500">*</span>
                                             </Label>
-                                            <input
-                                                id="end_date"
-                                                type="date"
+                                            <DatePicker
                                                 value={data.end_date}
-                                                onChange={(e) => setData('end_date', e.target.value)}
-                                                className="h-10 w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                required
+                                                onChange={(date) => setData('end_date', date)}
+                                                placeholder="Pick end date"
                                             />
                                             {errors.end_date && <div className="mt-1.5 text-xs text-red-600">{errors.end_date}</div>}
                                         </div>
@@ -238,14 +234,10 @@ export default function CreateContract({ contractTypes }: CreateContractProps) {
                                             >
                                                 Termination Deadline Date
                                             </Label>
-                                            <input
-                                                id="termination_deadline_date"
-                                                type="date"
+                                            <DatePicker
                                                 value={data.termination_deadline_date}
-                                                onChange={(e) =>
-                                                    setData('termination_deadline_date', e.target.value)
-                                                }
-                                                className="h-10 w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                onChange={(date) => setData('termination_deadline_date', date)}
+                                                placeholder="Pick deadline date"
                                             />
                                             {errors.termination_deadline_date && (
                                                 <div className="mt-1.5 text-xs text-red-600">

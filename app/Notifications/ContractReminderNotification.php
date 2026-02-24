@@ -38,19 +38,10 @@ class ContractReminderNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject("Contract Reminder: {$this->contract->title}")
-            ->greeting("Hello!")
-            ->line("This is a reminder about the following contract:")
-            ->line("**Title:** {$this->contract->title}")
-            ->line("**Counterparty:** {$this->contract->counterparty}")
-            ->line("**End Date:** {$this->contract->end_date->format('F d, Y')}")
-            ->when($this->contract->termination_deadline, function ($mail) {
-                return $mail->line("**Termination Deadline:** {$this->contract->termination_deadline->format('F d, Y')}");
-            })
-            ->when($this->reminder->notes, function ($mail) {
-                return $mail->line("**Notes:** {$this->reminder->notes}");
-            })
-            ->action('View Contract', url("/contracts/{$this->contract->id}"))
-            ->line('Please take appropriate action regarding this contract.');
+            ->markdown('emails.reminders.reminder', [
+                'contract' => $this->contract,
+                'reminder' => $this->reminder,
+            ]);
     }
 
     public function toArray($notifiable): array

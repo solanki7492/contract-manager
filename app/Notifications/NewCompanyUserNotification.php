@@ -27,12 +27,10 @@ class NewCompanyUserNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject("Welcome to {$this->company->name} - Contract Management System")
-            ->greeting("Hello {$notifiable->name}!")
-            ->line("An account has been created for you at {$this->company->name}'s Contract Management System.")
-            ->line("**Email:** {$notifiable->email}")
-            ->line("**Temporary Password:** {$this->temporaryPassword}")
-            ->action('Login Now', url('/login'))
-            ->line('You will be required to change your password upon first login.')
-            ->line('Please keep your credentials secure.');
+            ->markdown('emails.users.welcome-user', [
+                'user' => $notifiable,
+                'company' => $this->company,
+                'temporaryPassword' => $this->temporaryPassword,
+            ]);
     }
 }
