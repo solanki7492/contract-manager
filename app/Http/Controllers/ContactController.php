@@ -66,10 +66,10 @@ class ContactController extends Controller
 
         $company = $request->user()->company;
         
-        $user->notify(new NewCompanyUserNotification(
-            $company,
-            $temporaryPassword
-        ));
+        // $user->notify(new NewCompanyUserNotification(
+        //     $company,
+        //     $temporaryPassword
+        // ));
 
         return redirect()->route('contacts.index')
             ->with('success', 'User created successfully. Login credentials sent via email.');

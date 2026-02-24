@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Enums\UserRole;
 
 class UserController extends Controller
 {
@@ -18,7 +19,7 @@ class UserController extends Controller
     {
         //$this->authorize('viewAny', User::class);
 
-        $query = User::with('company')->orderBy('name');
+        $query = User::where('role', '!=', UserRole::USER)->with('company')->orderBy('name');
 
         if (!$request->user()->isSuperAdmin()) {
             $query->where('company_id', $request->user()->company_id);
@@ -81,10 +82,12 @@ class UserController extends Controller
         // Get the company for notification
         $company = \App\Models\Company::find($companyId);
         
-        $user->notify(new NewCompanyUserNotification(
-            $company,
-            $temporaryPassword
-        ));
+        if ($user->role !== UserRole::USER) {
+            $user->notify(new NewCompanyUserNotification(
+                $company,
+                $temporaryPassword
+            ));
+        }
 
         return redirect()->route('users.index')
             ->with('success', 'User created successfully. Login credentials sent via email.');

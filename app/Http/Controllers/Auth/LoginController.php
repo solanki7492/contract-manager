@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,6 +28,17 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::user();
+            
+            // Prevent users with 'user' role from logging in
+            if ($user->role === UserRole::USER) {
+                Auth::logout();
+                $request->session()->invalidate();
+                
+                return back()->withErrors([
+                    'email' => 'Access denied. You do not have permission to log in.',
+                ])->onlyInput('email');
+            }
+            
             $user->update(['last_login_at' => now()]);
 
             if ($user->force_password_change) {

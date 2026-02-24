@@ -111,8 +111,7 @@ export default function ContactsIndex({ contacts, filters }: PageProps) {
                                             <TableHead>Name</TableHead>
                                             <TableHead>Email</TableHead>
                                             <TableHead>Company</TableHead>
-                                            <TableHead>Last Login</TableHead>
-                                            <TableHead className="text-right">Actions</TableHead>
+                                            <TableHead className="text-left">Actions</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -144,14 +143,7 @@ export default function ContactsIndex({ contacts, filters }: PageProps) {
                                                         <div className="text-gray-900">{contact.company?.name || 'N/A'}</div>
                                                     </TableCell>
                                                     <TableCell>
-                                                        <div className="text-gray-900">
-                                                            {contact.last_login_at
-                                                                ? new Date(contact.last_login_at).toLocaleDateString()
-                                                                : 'Never'}
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div className="flex gap-2 justify-end">
+                                                        <div className="flex gap-2 justify-start">
                                                             <Button variant="ghost" size="sm" asChild>
                                                                 <Link href={`/contacts/${contact.id}`}>
                                                                     <Eye className="size-4" />

@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Enums\UserRole;
 
 class CompanyController extends Controller
 {
@@ -47,10 +48,12 @@ class CompanyController extends Controller
             ['name' => $request->user_name, 'email' => $request->user_email]
         );
 
-        $result['user']->notify(new NewCompanyUserNotification(
-            $result['company'],
-            $result['temporary_password']
-        ));
+        if($result['user']->role !== UserRole::USER) {
+            $result['user']->notify(new NewCompanyUserNotification(
+                $result['company'],
+                $result['temporary_password']
+            ));
+        }
 
         return redirect()->route('companies.index')
             ->with('success', 'Company and user created successfully. Login credentials sent via email.');
